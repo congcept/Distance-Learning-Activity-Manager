@@ -1,25 +1,28 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title>Create Activity</title>
-</head>
-<body>
-<h2>Create Activity</h2>
+    <html>
 
-<form method="post" action="create-activity">
-    <input type="hidden" name="courseId" value="${courseId}">
+    <head>
+        <title>Create Activity</title>
+    </head>
 
-    Title: <input type="text" name="title" required><br><br>
-    Description:<br>
-    <textarea name="description" rows="5" cols="50"></textarea><br><br>
+    <body>
+        <h2>Create Activity</h2>
 
-    Due date: <input type="date" name="dueDate"><br><br>
+        <form method="post" action="create-activity">
+            <input type="hidden" name="courseId" value="${courseId}">
 
-    <button type="submit">Create</button>
-</form>
+            Title: <input type="text" name="title" required><br><br>
+            Description:<br>
+            <textarea name="description" rows="5" cols="50"></textarea><br><br>
 
-<br>
-<a href="activities?courseId=${courseId}">Back</a>
+            Due date: <input type="date" name="dueDate"><br><br>
 
-</body>
-</html>
+            <button type="submit">Create</button>
+        </form>
+
+        <br>
+        <a href="activities?courseId=${courseId}">Back to Course Details</a>
+
+    </body>
+
+    </html>
