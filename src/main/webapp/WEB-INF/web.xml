@@ -61,5 +61,7 @@
     <servlet-mapping>
         <servlet-name>SubmissionServlet</servlet-name>
         <url-pattern>/submit-activity</url-pattern>
+        <url-pattern>/view-submissions</url-pattern>
+        <url-pattern>/grade-submission</url-pattern>
     </servlet-mapping>
 </web-app>

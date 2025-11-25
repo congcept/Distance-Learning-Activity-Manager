@@ -33,6 +33,10 @@
                             <br><br>
                             <a href="submit-activity?activityId=${a.id}&courseId=${courseId}">Submit Assignment</a>
                         </c:if>
+                        <c:if test="${sessionScope.user.role == 'INSTRUCTOR'}">
+                            <br><br>
+                            <a href="view-submissions?activityId=${a.id}&courseId=${courseId}">View Submissions</a>
+                        </c:if>
                     </div>
                 </c:forEach>
 

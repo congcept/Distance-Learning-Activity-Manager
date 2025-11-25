@@ -45,6 +45,15 @@ public class SubmissionDAO {
         return null;
     }
 
+    public boolean updateGrade(int submissionId, String grade, String feedback) throws SQLException {
+        String sql = "UPDATE submissions SET grade = ?, feedback = ? WHERE id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, grade);
+        ps.setString(2, feedback);
+        ps.setInt(3, submissionId);
+        return ps.executeUpdate() > 0;
+    }
+
     private Submission mapRow(ResultSet rs) throws SQLException {
         return new Submission(
                 rs.getInt("id"),
