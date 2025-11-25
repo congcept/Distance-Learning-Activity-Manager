@@ -2,6 +2,7 @@ package com.dlam.controller;
 
 import com.dlam.dao.ActivityDAO;
 import com.dlam.model.Activity;
+import com.dlam.config.DatabaseConnection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,13 +11,8 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-@WebServlet(name = "ActivityServlet", urlPatterns = {"/activities", "/create-activity"})
+@WebServlet(name = "ActivityServlet", urlPatterns = { "/activities", "/create-activity" })
 public class ActivityServlet extends HttpServlet {
-
-    private Connection getConn() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/dlam_db?useSSL=false";
-        return DriverManager.getConnection(url, "root", "");
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -24,7 +20,7 @@ public class ActivityServlet extends HttpServlet {
 
         String path = req.getServletPath();
 
-        try (Connection conn = getConn()) {
+        try (Connection conn = DatabaseConnection.initializeDatabase()) {
             ActivityDAO dao = new ActivityDAO(conn);
 
             if ("/activities".equals(path)) {
@@ -57,7 +53,7 @@ public class ActivityServlet extends HttpServlet {
         String description = req.getParameter("description");
         String dueDate = req.getParameter("dueDate");
 
-        try (Connection conn = getConn()) {
+        try (Connection conn = DatabaseConnection.initializeDatabase()) {
             ActivityDAO dao = new ActivityDAO(conn);
 
             Date sqlDate = dueDate.isEmpty() ? null : Date.valueOf(dueDate);
@@ -67,7 +63,7 @@ public class ActivityServlet extends HttpServlet {
 
             resp.sendRedirect("activities?courseId=" + courseId);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new ServletException(e);
         }
     }
