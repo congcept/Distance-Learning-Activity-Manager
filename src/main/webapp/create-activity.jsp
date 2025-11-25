@@ -3,26 +3,28 @@
 
     <head>
         <title>Create Activity</title>
+        <link rel="stylesheet" href="css/style.css">
     </head>
 
     <body>
-        <h2>Create Activity</h2>
+        <div class="container">
+            <h2>Create Activity</h2>
 
-        <form method="post" action="create-activity">
-            <input type="hidden" name="courseId" value="${courseId}">
+            <form method="post" action="create-activity">
+                <input type="hidden" name="courseId" value="${courseId}">
 
-            Title: <input type="text" name="title" required><br><br>
-            Description:<br>
-            <textarea name="description" rows="5" cols="50"></textarea><br><br>
+                Title: <input type="text" name="title" required><br><br>
+                Description:<br>
+                <textarea name="description" rows="5" cols="50"></textarea><br><br>
 
-            Due date: <input type="date" name="dueDate"><br><br>
+                Due date: <input type="date" name="dueDate"><br><br>
 
-            <button type="submit">Create</button>
-        </form>
+                <button type="submit">Create</button>
+            </form>
 
-        <br>
-        <a href="activities?courseId=${courseId}">Back to Course Details</a>
-
+            <br>
+            <a href="activities?courseId=${courseId}">Back to Course Details</a>
+        </div>
     </body>
 
     </html>

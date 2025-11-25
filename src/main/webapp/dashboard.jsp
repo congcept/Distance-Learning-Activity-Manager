@@ -4,36 +4,37 @@
 
         <head>
             <title>Dashboard - DLAM</title>
+            <link rel="stylesheet" href="css/style.css">
         </head>
 
         <body>
+            <div class="container">
+                <h2>Welcome, ${sessionScope.user.fullName} (${sessionScope.user.role})</h2>
 
-            <h2>Welcome, ${sessionScope.user.fullName} (${sessionScope.user.role})</h2>
+                <a href="logout">Logout</a>
 
-            <a href="logout">Logout</a>
+                <h3>Available Courses</h3>
 
-            <h3>Available Courses</h3>
+                <c:if test="${sessionScope.user.role == 'INSTRUCTOR'}">
+                    <a href="create-course">Create New Course</a>
+                    <br><br>
+                </c:if>
 
-            <c:if test="${sessionScope.user.role == 'INSTRUCTOR'}">
-                <a href="create-course">Create New Course</a>
-                <br><br>
-            </c:if>
+                <c:if test="${empty courses}">
+                    <p>No courses available.</p>
+                </c:if>
 
-            <c:if test="${empty courses}">
-                <p>No courses available.</p>
-            </c:if>
-
-            <ul>
-                <c:forEach var="c" items="${courses}">
-                    <li>
-                        <strong>${c.title}</strong> - ${c.description}
+                <ul>
+                    <c:forEach var="c" items="${courses}">
+                        <li>
+                            <strong>${c.title}</strong> - ${c.description}
+                            <br>
+                            <a href="activities?courseId=${c.id}">View Activities</a>
+                        </li>
                         <br>
-                        <a href="activities?courseId=${c.id}">View Activities</a>
-                    </li>
-                    <br>
-                </c:forEach>
-            </ul>
-
+                    </c:forEach>
+                </ul>
+            </div>
         </body>
 
         </html>
