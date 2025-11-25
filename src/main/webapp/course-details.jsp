@@ -28,6 +28,11 @@
                         <div class="activity-title"><strong>${a.title}</strong></div>
                         <div class="activity-date">Due: ${a.dueDate}</div>
                         ${a.description}
+
+                        <c:if test="${sessionScope.user.role == 'STUDENT'}">
+                            <br><br>
+                            <a href="submit-activity?activityId=${a.id}&courseId=${courseId}">Submit Assignment</a>
+                        </c:if>
                     </div>
                 </c:forEach>
 
