@@ -3,7 +3,7 @@
     <html>
 
     <head>
-        <title>Login - DLAM</title>
+        <title>Login</title>
         <link rel="stylesheet" href="css/style.css">
     </head>
 
@@ -17,7 +17,7 @@
                 <input type="password" name="password" required><br>
                 <button type="submit">Login</button>
             </form>
-            <a href="register.jsp">Don't have an account? Register</a>
+            <a href="register.jsp">Register</a>
         </div>
     </body>
 

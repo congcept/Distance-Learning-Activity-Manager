@@ -2,11 +2,12 @@ package com.dlam.controller;
 
 import com.dlam.dao.ActivityDAO;
 import com.dlam.model.Activity;
+import com.dlam.model.User;
 import com.dlam.config.DatabaseConnection;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
@@ -33,6 +34,12 @@ public class ActivityServlet extends HttpServlet {
                 req.getRequestDispatcher("course-details.jsp").forward(req, resp);
 
             } else if ("/create-activity".equals(path)) {
+                HttpSession session = req.getSession();
+                User user = (User) session.getAttribute("user");
+                if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
+                    resp.sendRedirect("login.jsp");
+                    return;
+                }
                 req.setAttribute("courseId", req.getParameter("courseId"));
                 req.getRequestDispatcher("create-activity.jsp").forward(req, resp);
             }
@@ -47,6 +54,13 @@ public class ActivityServlet extends HttpServlet {
             throws ServletException, IOException {
 
         req.setCharacterEncoding("UTF-8");
+
+        HttpSession session = req.getSession();
+        User user = (User) session.getAttribute("user");
+        if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
+            resp.sendRedirect("login.jsp");
+            return;
+        }
 
         int courseId = Integer.parseInt(req.getParameter("courseId"));
         String title = req.getParameter("title");
