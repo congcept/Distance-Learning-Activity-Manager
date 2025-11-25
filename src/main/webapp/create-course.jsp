@@ -8,6 +8,9 @@
 
     <body>
         <div class="container">
+            <jsp:include page="header.jsp">
+                <jsp:param name="backLink" value="courses" />
+            </jsp:include>
             <h2>Create New Course</h2>
 
             <form method="post" action="courses">
@@ -18,9 +21,6 @@
 
                 <button type="submit">Create Course</button>
             </form>
-
-            <br>
-            <a href="courses">Back to Dashboard</a>
         </div>
     </body>
 

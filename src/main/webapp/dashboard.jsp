@@ -9,11 +9,9 @@
 
         <body>
             <div class="container">
-                <h2>Welcome, ${sessionScope.user.fullName} (${sessionScope.user.role})</h2>
+                <jsp:include page="header.jsp" />
 
-                <a href="logout">Logout</a>
-
-                <h3>Available Courses</h3>
+                <h3 class="inline">Available Courses</h3>
 
                 <c:if test="${sessionScope.user.role == 'INSTRUCTOR'}">
                     <a href="create-course">Create New Course</a>
