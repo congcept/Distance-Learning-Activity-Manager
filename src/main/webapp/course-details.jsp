@@ -10,6 +10,9 @@
 
         <body>
             <div class="container">
+                <jsp:include page="header.jsp">
+                    <jsp:param name="backLink" value="courses" />
+                </jsp:include>
 
                 <h2>Course ID: ${courseId}</h2>
 
@@ -44,9 +47,6 @@
                         </c:if>
                     </div>
                 </c:forEach>
-
-                <br>
-                <a href="courses">Back to Dashboard</a>
             </div>
         </body>
 

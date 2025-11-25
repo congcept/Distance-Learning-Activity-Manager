@@ -10,7 +10,59 @@ body {
 h2,
 h3 {
     color: #2c3e50;
+    margin-top: 0;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+.logout-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+    text-decoration: none;
+}
+
+.back-btn {
+    background-color: #95a5a6;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-right: 15px;
+}
+
+.back-btn:hover {
+    background-color: #7f8c8d;
+    text-decoration: none;
+}
+
+.left-section {
+    display: flex;
+    align-items: center;
+}
+
+.inline {
+    display: inline-block;
+}
+
 
 a {
     color: #3498db;

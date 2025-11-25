@@ -9,6 +9,9 @@
 
         <body>
             <div class="container">
+                <jsp:include page="header.jsp">
+                    <jsp:param name="backLink" value="activities?courseId=${param.courseId}" />
+                </jsp:include>
                 <h2>Submissions for Activity ID: ${activityId}</h2>
 
                 <c:if test="${empty submissions}">
@@ -38,9 +41,6 @@
                         </form>
                     </div>
                 </c:forEach>
-
-                <br>
-                <a href="activities?courseId=${courseId}">Back to Course Activities</a>
             </div>
         </body>
 

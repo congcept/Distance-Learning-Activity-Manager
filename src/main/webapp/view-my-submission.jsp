@@ -9,6 +9,9 @@
 
         <body>
             <div class="container">
+                <jsp:include page="header.jsp">
+                    <jsp:param name="backLink" value="activities?courseId=${param.courseId}" />
+                </jsp:include>
                 <h2>My Submission</h2>
 
                 <div class="activity-card">
@@ -37,9 +40,6 @@
                         <c:out value="${submission.feedback}" default="No feedback provided." />
                     </p>
                 </div>
-
-                <br>
-                <a href="activities?courseId=${param.courseId}">Back to Activities</a>
             </div>
         </body>
 
