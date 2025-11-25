@@ -45,6 +45,34 @@ public class SubmissionDAO {
         return null;
     }
 
+    public List<Submission> getAllSubmissionsByStudent(int activityId, int studentId) throws SQLException {
+        List<Submission> list = new ArrayList<>();
+        String sql = "SELECT * FROM submissions WHERE activity_id = ? AND student_id = ? ORDER BY submission_date DESC";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, activityId);
+        ps.setInt(2, studentId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            list.add(mapRow(rs));
+        }
+        return list;
+    }
+
+    public List<Integer> getSubmittedActivityIds(int studentId, int courseId) throws SQLException {
+        List<Integer> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT s.activity_id FROM submissions s " +
+                "JOIN activities a ON s.activity_id = a.id " +
+                "WHERE s.student_id = ? AND a.course_id = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, studentId);
+        ps.setInt(2, courseId);
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            list.add(rs.getInt("activity_id"));
+        }
+        return list;
+    }
+
     public boolean updateGrade(int submissionId, String grade, String feedback) throws SQLException {
         String sql = "UPDATE submissions SET grade = ?, feedback = ? WHERE id = ?";
         PreparedStatement ps = conn.prepareStatement(sql);

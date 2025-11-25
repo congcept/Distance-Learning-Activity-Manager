@@ -63,5 +63,6 @@
         <url-pattern>/submit-activity</url-pattern>
         <url-pattern>/view-submissions</url-pattern>
         <url-pattern>/grade-submission</url-pattern>
+        <url-pattern>/view-my-submissions</url-pattern>
     </servlet-mapping>
 </web-app>

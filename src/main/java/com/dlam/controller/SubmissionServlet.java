@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-@WebServlet(name = "SubmissionServlet", urlPatterns = { "/submit-activity", "/view-submissions", "/grade-submission" })
+@WebServlet(name = "SubmissionServlet", urlPatterns = { "/submit-activity", "/view-submissions", "/grade-submission",
+        "/view-my-submissions" })
 public class SubmissionServlet extends HttpServlet {
 
     @Override
@@ -22,9 +23,37 @@ public class SubmissionServlet extends HttpServlet {
         String path = req.getServletPath();
 
         if ("/submit-activity".equals(path)) {
+            HttpSession session = req.getSession();
+            User user = (User) session.getAttribute("user");
+            if (user == null || !"STUDENT".equals(user.getRole())) {
+                resp.sendRedirect("login.jsp");
+                return;
+            }
+
             String activityId = req.getParameter("activityId");
             req.setAttribute("activityId", activityId);
             req.getRequestDispatcher("submit-activity.jsp").forward(req, resp);
+
+        } else if ("/view-my-submissions".equals(path)) {
+            HttpSession session = req.getSession();
+            User user = (User) session.getAttribute("user");
+            if (user == null || !"STUDENT".equals(user.getRole())) {
+                resp.sendRedirect("login.jsp");
+                return;
+            }
+
+            int activityId = Integer.parseInt(req.getParameter("activityId"));
+            try (Connection conn = DatabaseConnection.initializeDatabase()) {
+                SubmissionDAO dao = new SubmissionDAO(conn);
+                List<Submission> submissions = dao.getAllSubmissionsByStudent(activityId, user.getId());
+                req.setAttribute("submissions", submissions);
+                req.setAttribute("activityId", activityId);
+                req.setAttribute("courseId", req.getParameter("courseId"));
+                req.getRequestDispatcher("view-my-submissions.jsp").forward(req, resp);
+            } catch (Exception e) {
+                throw new ServletException(e);
+            }
+
         } else if ("/view-submissions".equals(path)) {
             // Instructor viewing submissions
             HttpSession session = req.getSession();

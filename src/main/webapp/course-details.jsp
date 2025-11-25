@@ -32,6 +32,11 @@
                         <c:if test="${sessionScope.user.role == 'STUDENT'}">
                             <br><br>
                             <a href="submit-activity?activityId=${a.id}&courseId=${courseId}">Submit Assignment</a>
+
+                            <c:if test="${submittedActivityIds.contains(a.id)}">
+                                | <a href="view-my-submissions?activityId=${a.id}&courseId=${courseId}">View Past
+                                    Submissions</a>
+                            </c:if>
                         </c:if>
                         <c:if test="${sessionScope.user.role == 'INSTRUCTOR'}">
                             <br><br>
