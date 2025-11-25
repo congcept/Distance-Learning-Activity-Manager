@@ -1,6 +1,7 @@
 package com.dlam.controller;
 
 import com.dlam.dao.ActivityDAO;
+import com.dlam.dao.SubmissionDAO;
 import com.dlam.model.Activity;
 import com.dlam.model.User;
 import com.dlam.config.DatabaseConnection;
@@ -30,6 +31,14 @@ public class ActivityServlet extends HttpServlet {
 
                 req.setAttribute("courseId", courseId);
                 req.setAttribute("activities", activities);
+
+                HttpSession session = req.getSession();
+                User user = (User) session.getAttribute("user");
+                if (user != null && "STUDENT".equals(user.getRole())) {
+                    SubmissionDAO subDao = new SubmissionDAO(conn);
+                    List<Integer> submittedActivityIds = subDao.getSubmittedActivityIds(user.getId(), courseId);
+                    req.setAttribute("submittedActivityIds", submittedActivityIds);
+                }
 
                 req.getRequestDispatcher("course-details.jsp").forward(req, resp);
 

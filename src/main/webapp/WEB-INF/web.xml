@@ -53,4 +53,16 @@
         <url-pattern>/activities</url-pattern>
         <url-pattern>/create-activity</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SubmissionServlet</servlet-name>
+        <servlet-class>com.dlam.controller.SubmissionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmissionServlet</servlet-name>
+        <url-pattern>/submit-activity</url-pattern>
+        <url-pattern>/view-submissions</url-pattern>
+        <url-pattern>/grade-submission</url-pattern>
+        <url-pattern>/view-my-submissions</url-pattern>
+    </servlet-mapping>
 </web-app>
