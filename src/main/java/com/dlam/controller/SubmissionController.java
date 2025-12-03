@@ -43,12 +43,17 @@ public class SubmissionController {
             return "redirect:/login";
         }
 
+        if (content.trim().isEmpty() && file.isEmpty()) {
+            return "redirect:/submit-activity?activityId=" + activityId + "&courseId=" + courseId
+                    + "&error=emptySubmission";
+        }
+
         Submission submission = new Submission(activityId, user.getId(), content);
 
         if (!file.isEmpty()) {
             try {
-                // Define upload directory
-                String uploadDir = "src/main/resources/static/uploads/";
+                // Define upload directory (Project Root/uploads)
+                String uploadDir = "uploads/";
                 java.io.File directory = new java.io.File(uploadDir);
                 if (!directory.exists()) {
                     directory.mkdirs();
@@ -60,7 +65,7 @@ public class SubmissionController {
                 String filePath = uploadDir + uniqueFilename;
 
                 // Save file
-                file.transferTo(new java.io.File(filePath));
+                file.transferTo(new java.io.File(new java.io.File(filePath).getAbsolutePath()));
 
                 // Set file info in submission
                 submission.setFilePath("/uploads/" + uniqueFilename);
