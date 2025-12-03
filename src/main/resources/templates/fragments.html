@@ -11,6 +11,8 @@
             </div>
         </div>
         <div class="actions">
+            <a th:if="${session.user}" th:href="@{/profile}" class="profile-btn" style="margin-right: 10px;">My
+                Profile</a>
             <a th:if="${session.user}" th:href="@{/logout}" class="logout-btn">Logout</a>
         </div>
     </div>

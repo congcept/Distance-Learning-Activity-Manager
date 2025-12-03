@@ -62,4 +62,32 @@ public class AuthController {
         session.invalidate();
         return "redirect:/login";
     }
+
+    @GetMapping("/profile")
+    public String profilePage(HttpSession session, org.springframework.ui.Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        return "profile";
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@RequestParam("fullname") String fullName,
+            @RequestParam("password") String password,
+            HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        userRepository.updateUser(fullName, password, user.getId());
+
+        // Update session with new values
+        user.setFullName(fullName);
+        user.setPassword(password);
+        session.setAttribute("user", user);
+
+        return "redirect:/courses?success=profileUpdated";
+    }
 }
