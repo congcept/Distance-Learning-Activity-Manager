@@ -22,6 +22,11 @@
                 Content
             </div>
 
+            <p th:if="${s.filePath}">
+                <strong>Attachment:</strong> <a th:href="@{${s.filePath}}" th:text="${s.originalFilename}"
+                    target="_blank">Download</a>
+            </p>
+
             <hr>
 
             <h3>Instructor Feedback</h3>

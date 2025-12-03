@@ -36,6 +36,7 @@ public class SubmissionController {
     public String submitActivity(@RequestParam("activityId") int activityId,
             @RequestParam("content") String content,
             @RequestParam(value = "courseId", required = false) String courseId,
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
             HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"STUDENT".equals(user.getRole())) {
@@ -43,6 +44,34 @@ public class SubmissionController {
         }
 
         Submission submission = new Submission(activityId, user.getId(), content);
+
+        if (!file.isEmpty()) {
+            try {
+                // Define upload directory
+                String uploadDir = "src/main/resources/static/uploads/";
+                java.io.File directory = new java.io.File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                // Generate unique filename
+                String originalFilename = file.getOriginalFilename();
+                String uniqueFilename = java.util.UUID.randomUUID().toString() + "_" + originalFilename;
+                String filePath = uploadDir + uniqueFilename;
+
+                // Save file
+                file.transferTo(new java.io.File(filePath));
+
+                // Set file info in submission
+                submission.setFilePath("/uploads/" + uniqueFilename);
+                submission.setOriginalFilename(originalFilename);
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+                return "redirect:/submit-activity?activityId=" + activityId + "&courseId=" + courseId
+                        + "&error=uploadFailed";
+            }
+        }
+
         submissionRepository.save(submission);
 
         if (courseId != null) {

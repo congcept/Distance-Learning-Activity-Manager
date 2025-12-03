@@ -14,9 +14,14 @@
         <p th:if="${#lists.isEmpty(submissions)}">No submissions yet.</p>
 
         <div th:each="s : ${submissions}" class="activity-card">
-            <p><strong th:text="'Student ID: ' + ${s.studentId}">Student ID</strong></p>
+            <p><strong>Student: </strong><span th:text="${s.student.fullName} + ' (ID: ' + ${s.studentId} + ')'">Student
+                    Name</span></p>
             <p><strong th:text="'Submitted on: ' + ${s.submissionDate}">Date</strong></p>
             <p><strong>Content:</strong><br> <span th:text="${s.content}">Content</span></p>
+            <p th:if="${s.filePath}">
+                <strong>Attachment:</strong> <a th:href="@{${s.filePath}}" th:text="${s.originalFilename}"
+                    target="_blank">Download</a>
+            </p>
 
             <hr>
 

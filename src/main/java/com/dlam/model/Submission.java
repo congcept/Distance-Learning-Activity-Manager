@@ -27,6 +27,16 @@ public class Submission {
     @Column(columnDefinition = "TEXT")
     private String feedback;
 
+    @ManyToOne
+    @JoinColumn(name = "student_id", insertable = false, updatable = false)
+    private User student;
+
+    @Column(name = "file_path")
+    private String filePath;
+
+    @Column(name = "original_filename")
+    private String originalFilename;
+
     public Submission() {
     }
 
@@ -101,5 +111,29 @@ public class Submission {
 
     public void setFeedback(String feedback) {
         this.feedback = feedback;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getOriginalFilename() {
+        return originalFilename;
+    }
+
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
     }
 }

@@ -26,16 +26,29 @@ public class ActivityController {
     @Autowired
     private SubmissionRepository submissionRepository;
 
+    @Autowired
+    private com.dlam.repository.EnrollmentRepository enrollmentRepository;
+
     @GetMapping("/activities")
     public String listActivities(@RequestParam("courseId") int courseId,
             HttpSession session,
             Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        if ("STUDENT".equals(user.getRole())) {
+            if (!enrollmentRepository.existsByStudentIdAndCourseId(user.getId(), courseId)) {
+                return "redirect:/courses?error=notEnrolled";
+            }
+        }
+
         List<Activity> activities = activityRepository.findByCourseId(courseId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("activities", activities);
 
-        User user = (User) session.getAttribute("user");
-        if (user != null && "STUDENT".equals(user.getRole())) {
+        if ("STUDENT".equals(user.getRole())) {
             List<Submission> submissions = submissionRepository.findByStudentId(user.getId());
             List<Integer> submittedActivityIds = submissions.stream()
                     .filter(s -> activities.stream().anyMatch(a -> a.getId() == s.getActivityId()))
@@ -44,7 +57,7 @@ public class ActivityController {
             model.addAttribute("submittedActivityIds", submittedActivityIds);
         }
 
-        return "course-details"; // Maps to course-details.jsp
+        return "course-details";
     }
 
     @GetMapping("/create-activity")
