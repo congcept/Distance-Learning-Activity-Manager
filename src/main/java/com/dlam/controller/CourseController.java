@@ -43,18 +43,16 @@ public class CourseController {
 
             model.addAttribute("myCourses", myCourses);
             model.addAttribute("availableCourses", availableCourses);
+            model.addAttribute("myCourses", myCourses);
+            model.addAttribute("availableCourses", availableCourses);
+        } else if (user != null && "INSTRUCTOR".equals(user.getRole())) {
+            // Instructors only see courses they created
+            List<Course> myCourses = courseRepository.findByInstructorId(user.getId());
+            model.addAttribute("myCourses", myCourses);
+            model.addAttribute("availableCourses", java.util.Collections.emptyList());
         } else {
-            // Instructors or others see all courses (or logic can be adjusted)
-            // For now, let's put all in "myCourses" or "availableCourses" depending on how
-            // we want to show it.
-            // Or just use "courses" attribute for backward compatibility if needed, but
-            // dashboard needs update.
-            // Let's put all in "availableCourses" for non-students so they can see them,
-            // or "myCourses" if they are instructors.
-            // To keep dashboard simple, let's just pass "courses" as before, but dashboard
-            // will change.
-            // Let's pass all as "myCourses" for Instructors so they can view activities.
-            model.addAttribute("myCourses", allCourses);
+            // Fallback for other roles (if any)
+            model.addAttribute("myCourses", java.util.Collections.emptyList());
             model.addAttribute("availableCourses", java.util.Collections.emptyList());
         }
 

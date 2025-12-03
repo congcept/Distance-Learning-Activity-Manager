@@ -29,6 +29,9 @@ public class ActivityController {
     @Autowired
     private com.dlam.repository.EnrollmentRepository enrollmentRepository;
 
+    @Autowired
+    private com.dlam.repository.CourseRepository courseRepository;
+
     @GetMapping("/activities")
     public String listActivities(@RequestParam("courseId") int courseId,
             HttpSession session,
@@ -41,6 +44,12 @@ public class ActivityController {
         if ("STUDENT".equals(user.getRole())) {
             if (!enrollmentRepository.existsByStudentIdAndCourseId(user.getId(), courseId)) {
                 return "redirect:/courses?error=notEnrolled";
+            }
+        } else if ("INSTRUCTOR".equals(user.getRole())) {
+            // Check if instructor owns the course
+            com.dlam.model.Course course = courseRepository.findById(courseId).orElse(null);
+            if (course == null || course.getInstructorId() != user.getId()) {
+                return "redirect:/courses?error=accessDenied";
             }
         }
 
@@ -68,6 +77,14 @@ public class ActivityController {
         if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
             return "redirect:/login";
         }
+
+        // Check ownership
+        int cId = Integer.parseInt(courseId);
+        com.dlam.model.Course course = courseRepository.findById(cId).orElse(null);
+        if (course == null || course.getInstructorId() != user.getId()) {
+            return "redirect:/courses?error=accessDenied";
+        }
+
         model.addAttribute("courseId", courseId);
         return "create-activity"; // Maps to create-activity.jsp
     }
@@ -81,6 +98,12 @@ public class ActivityController {
         User user = (User) session.getAttribute("user");
         if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
             return "redirect:/login";
+        }
+
+        // Check ownership
+        com.dlam.model.Course course = courseRepository.findById(courseId).orElse(null);
+        if (course == null || course.getInstructorId() != user.getId()) {
+            return "redirect:/courses?error=accessDenied";
         }
 
         Date sqlDate = dueDate.isEmpty() ? null : Date.valueOf(dueDate);

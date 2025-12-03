@@ -11,7 +11,7 @@
     <groupId>com.dlam</groupId>
     <artifactId>distance-learning-activity-manager</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
