@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>My Submissions</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
+        <h2 th:text="'My Submissions for Activity ID: ' + ${activityId}">My Submissions</h2>
+
+        <p th:if="${#lists.isEmpty(submissions)}">No submissions yet.</p>
+
+        <div th:each="s : ${submissions}" class="activity-card">
+            <p><strong th:text="'Submitted on: ' + ${s.submissionDate}">Date</strong></p>
+
+            <label>Your Answer:</label>
+            <div style="background: #f9f9f9; padding: 10px; border: 1px solid #eee; margin-bottom: 15px;"
+                th:text="${s.content}">
+                Content
+            </div>
+
+            <p th:if="${s.filePath}">
+                <strong>Attachment:</strong> <a th:href="@{${s.filePath}}" th:text="${s.originalFilename}"
+                    target="_blank">Download</a>
+            </p>
+
+            <hr>
+
+            <h3>Instructor Feedback</h3>
+            <p><strong>Grade:</strong>
+                <span th:if="${s.grade != null}" class="success" th:text="${s.grade}">Grade</span>
+                <span th:if="${s.grade == null}" style="color: #7f8c8d;">Not graded yet</span>
+            </p>
+
+            <p><strong>Feedback:</strong><br>
+                <span th:text="${s.feedback != null ? s.feedback : 'No feedback provided.'}">Feedback</span>
+            </p>
+        </div>
+    </div>
+</body>
+
+</html>

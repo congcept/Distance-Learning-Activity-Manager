@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Dashboard - DLAM</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=null)}"></div>
+
+        <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
+            <a th:href="@{/create-course}">Create New Course</a>
+            <br><br>
+        </div>
+
+        <div th:if="${session.user != null and session.user.role == 'STUDENT'}">
+            <h3>My Courses</h3>
+            <p th:if="${#lists.isEmpty(myCourses)}">You are not enrolled in any courses.</p>
+            <ul>
+                <li th:each="c : ${myCourses}">
+                    <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
+                    <br>
+                    <a th:href="@{/activities(courseId=${c.id})}">View Activities</a>
+                </li>
+            </ul>
+
+            <h3>Available Courses</h3>
+            <p th:if="${#lists.isEmpty(availableCourses)}">No other courses available.</p>
+            <ul>
+                <li th:each="c : ${availableCourses}">
+                    <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
+                    <br>
+                    <form action="/enroll" method="post" style="display:inline;">
+                        <input type="hidden" name="courseId" th:value="${c.id}" />
+                        <button type="submit">Enroll</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
+            <ul>
+                <li th:each="c : ${myCourses}">
+                    <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
+                    <br>
+                    <a th:href="@{/activities(courseId=${c.id})}">View Activities</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

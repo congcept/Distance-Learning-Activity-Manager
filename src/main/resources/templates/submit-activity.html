@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Submit Activity</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
+        <h2>Submit Activity</h2>
+
+        <form method="post" th:action="@{/submit-activity}" enctype="multipart/form-data"
+            onsubmit="return validateForm()">
+            <input type="hidden" name="activityId" th:value="${activityId}">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+
+            <label>Your Answer / Content:</label>
+            <textarea name="content" id="content" rows="10" cols="50"></textarea><br><br>
+
+            <label>Upload File (Optional):</label>
+            <input type="file" name="file" id="file"><br><br>
+
+            <button type="submit">Submit Assignment</button>
+        </form>
+
+        <script>
+            function validateForm() {
+                var content = document.getElementById("content").value.trim();
+                var file = document.getElementById("file").value;
+
+                if (content === "" && file === "") {
+                    alert("Please provide either a text answer or upload a file.");
+                    return false;
+                }
+                return true;
+            }
+        </script>
+    </div>
+</body>
+
+</html>

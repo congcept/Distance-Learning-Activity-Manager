@@ -38,6 +38,21 @@ h3 {
     text-decoration: none;
 }
 
+.profile-btn {
+    background-color: #3498db;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.profile-btn:hover {
+    background-color: #2980b9;
+    text-decoration: none;
+}
+
 .back-btn {
     background-color: #95a5a6;
     color: white;
