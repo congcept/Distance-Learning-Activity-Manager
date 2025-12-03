@@ -8,13 +8,13 @@
 
 <body>
     <div class="container">
-        <div th:replace="~{fragments :: header}" th:with="backLink=@{/activities(courseId=${param.courseId})}"></div>
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
         <h2>Submit Activity</h2>
 
         <form method="post" th:action="@{/submit-activity}" enctype="multipart/form-data"
             onsubmit="return validateForm()">
             <input type="hidden" name="activityId" th:value="${activityId}">
-            <input type="hidden" name="courseId" th:value="${param.courseId}">
+            <input type="hidden" name="courseId" th:value="${courseId}">
 
             <label>Your Answer / Content:</label>
             <textarea name="content" id="content" rows="10" cols="50"></textarea><br><br>

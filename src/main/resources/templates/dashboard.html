@@ -8,7 +8,7 @@
 
 <body>
     <div class="container">
-        <div th:replace="~{fragments :: header}"></div>
+        <div th:replace="~{fragments :: header(backLink=null)}"></div>
 
         <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
             <a th:href="@{/create-course}">Create New Course</a>

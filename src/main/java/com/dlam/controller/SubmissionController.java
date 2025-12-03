@@ -22,6 +22,7 @@ public class SubmissionController {
 
     @GetMapping("/submit-activity")
     public String showSubmitForm(@RequestParam("activityId") String activityId,
+            @RequestParam(value = "courseId", required = false) String courseId,
             HttpSession session,
             Model model) {
         User user = (User) session.getAttribute("user");
@@ -29,6 +30,7 @@ public class SubmissionController {
             return "redirect:/login";
         }
         model.addAttribute("activityId", activityId);
+        model.addAttribute("courseId", courseId);
         return "submit-activity"; // Maps to submit-activity.jsp
     }
 

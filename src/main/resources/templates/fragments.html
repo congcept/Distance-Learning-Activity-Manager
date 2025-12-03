@@ -2,10 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-    <div th:fragment="header" class="header">
+    <div th:fragment="header(backLink)" class="header">
         <div class="left-section">
-            <a th:if="${backLink != null or param.backLink != null}"
-                th:href="${backLink != null ? backLink : param.backLink}" class="back-btn">Back</a>
+            <a th:if="${backLink != null}" th:href="${backLink}" class="back-btn">Back</a>
             <div class="user-info">
                 <span th:if="${session.user}">Welcome, <strong th:text="${session.user.fullName}">User</strong> (<span
                         th:text="${session.user.role}">Role</span>)</span>

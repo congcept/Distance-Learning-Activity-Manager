@@ -8,7 +8,7 @@
 
 <body>
     <div class="container">
-        <div th:replace="~{fragments :: header}" th:with="backLink=@{/activities(courseId=${courseId})}"></div>
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
         <h2 th:text="'My Submissions for Activity ID: ' + ${activityId}">My Submissions</h2>
 
         <p th:if="${#lists.isEmpty(submissions)}">No submissions yet.</p>
