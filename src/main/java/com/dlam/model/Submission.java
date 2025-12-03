@@ -1,14 +1,30 @@
 package com.dlam.model;
 
+import jakarta.persistence.*;
 import java.sql.Timestamp;
 
+@Entity
+@Table(name = "submissions")
 public class Submission {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "activity_id", nullable = false)
     private int activityId;
+
+    @Column(name = "student_id", nullable = false)
     private int studentId;
+
+    @Column(name = "submission_date", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp submissionDate;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
+
     private String grade;
+
+    @Column(columnDefinition = "TEXT")
     private String feedback;
 
     public Submission() {

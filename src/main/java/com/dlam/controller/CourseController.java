@@ -1,8 +1,8 @@
 package com.dlam.controller;
 
-import com.dlam.dao.CourseDAO;
 import com.dlam.model.Course;
 import com.dlam.model.User;
+import com.dlam.repository.CourseRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,11 +17,11 @@ import java.util.List;
 public class CourseController {
 
     @Autowired
-    private CourseDAO courseDAO;
+    private CourseRepository courseRepository;
 
     @GetMapping("/courses")
     public String listCourses(Model model) {
-        List<Course> courses = courseDAO.getAllCourses();
+        List<Course> courses = courseRepository.findAll();
         model.addAttribute("courses", courses);
         return "dashboard"; // Maps to dashboard.jsp
     }
@@ -41,7 +41,7 @@ public class CourseController {
         }
 
         Course course = new Course(title, description, user.getId());
-        courseDAO.addCourse(course);
+        courseRepository.save(course);
         return "redirect:/courses";
     }
 }

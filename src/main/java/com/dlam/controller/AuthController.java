@@ -1,7 +1,7 @@
 package com.dlam.controller;
 
-import com.dlam.dao.UserDAO;
 import com.dlam.model.User;
+import com.dlam.repository.UserRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 public class AuthController {
 
     @Autowired
-    private UserDAO userDAO;
+    private UserRepository userRepository;
 
     @GetMapping("/login")
     public String loginPage() {
@@ -30,21 +32,25 @@ public class AuthController {
             @RequestParam("fullname") String fullName,
             @RequestParam("password") String password,
             @RequestParam("role") String role) {
-        User newUser = new User(username, password, fullName, role);
-        if (userDAO.registerUser(newUser)) {
-            return "redirect:/login?success=registered";
-        } else {
+
+        if (userRepository.findByUsername(username).isPresent()) {
             return "redirect:/register?error=failed";
         }
+
+        User newUser = new User(username, password, fullName, role);
+        userRepository.save(newUser);
+        return "redirect:/login?success=registered";
     }
 
     @PostMapping("/login")
     public String loginUser(@RequestParam("username") String username,
             @RequestParam("password") String password,
             HttpSession session) {
-        User user = userDAO.checkLogin(username, password);
-        if (user != null) {
-            session.setAttribute("user", user);
+
+        Optional<User> userOpt = userRepository.findByUsernameAndPassword(username, password);
+
+        if (userOpt.isPresent()) {
+            session.setAttribute("user", userOpt.get());
             return "redirect:/courses";
         } else {
             return "redirect:/login?error=invalid";

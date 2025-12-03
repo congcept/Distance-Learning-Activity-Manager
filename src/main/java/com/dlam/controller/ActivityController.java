@@ -1,9 +1,10 @@
 package com.dlam.controller;
 
-import com.dlam.dao.ActivityDAO;
-import com.dlam.dao.SubmissionDAO;
 import com.dlam.model.Activity;
+import com.dlam.model.Submission;
 import com.dlam.model.User;
+import com.dlam.repository.ActivityRepository;
+import com.dlam.repository.SubmissionRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,27 +15,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ActivityController {
 
     @Autowired
-    private ActivityDAO activityDAO;
+    private ActivityRepository activityRepository;
 
     @Autowired
-    private SubmissionDAO submissionDAO;
+    private SubmissionRepository submissionRepository;
 
     @GetMapping("/activities")
     public String listActivities(@RequestParam("courseId") int courseId,
             HttpSession session,
             Model model) {
-        List<Activity> activities = activityDAO.getActivitiesByCourse(courseId);
+        List<Activity> activities = activityRepository.findByCourseId(courseId);
         model.addAttribute("courseId", courseId);
         model.addAttribute("activities", activities);
 
         User user = (User) session.getAttribute("user");
         if (user != null && "STUDENT".equals(user.getRole())) {
-            List<Integer> submittedActivityIds = submissionDAO.getSubmittedActivityIds(user.getId(), courseId);
+            List<Submission> submissions = submissionRepository.findByStudentId(user.getId());
+            List<Integer> submittedActivityIds = submissions.stream()
+                    .filter(s -> activities.stream().anyMatch(a -> a.getId() == s.getActivityId()))
+                    .map(Submission::getActivityId)
+                    .collect(Collectors.toList());
             model.addAttribute("submittedActivityIds", submittedActivityIds);
         }
 
@@ -66,7 +72,7 @@ public class ActivityController {
 
         Date sqlDate = dueDate.isEmpty() ? null : Date.valueOf(dueDate);
         Activity activity = new Activity(courseId, title, description, sqlDate);
-        activityDAO.addActivity(activity);
+        activityRepository.save(activity);
 
         return "redirect:/activities?courseId=" + courseId;
     }

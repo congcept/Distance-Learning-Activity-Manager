@@ -1,8 +1,8 @@
 package com.dlam.controller;
 
-import com.dlam.dao.SubmissionDAO;
 import com.dlam.model.Submission;
 import com.dlam.model.User;
+import com.dlam.repository.SubmissionRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,12 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class SubmissionController {
 
     @Autowired
-    private SubmissionDAO submissionDAO;
+    private SubmissionRepository submissionRepository;
 
     @GetMapping("/submit-activity")
     public String showSubmitForm(@RequestParam("activityId") String activityId,
@@ -42,7 +43,7 @@ public class SubmissionController {
         }
 
         Submission submission = new Submission(activityId, user.getId(), content);
-        submissionDAO.addSubmission(submission);
+        submissionRepository.save(submission);
 
         if (courseId != null) {
             return "redirect:/activities?courseId=" + courseId;
@@ -61,7 +62,7 @@ public class SubmissionController {
             return "redirect:/login";
         }
 
-        List<Submission> submissions = submissionDAO.getAllSubmissionsByStudent(activityId, user.getId());
+        List<Submission> submissions = submissionRepository.findByActivityIdAndStudentId(activityId, user.getId());
         model.addAttribute("submissions", submissions);
         model.addAttribute("activityId", activityId);
         model.addAttribute("courseId", courseId);
@@ -78,7 +79,7 @@ public class SubmissionController {
             return "redirect:/login";
         }
 
-        List<Submission> submissions = submissionDAO.getSubmissionsByActivity(activityId);
+        List<Submission> submissions = submissionRepository.findByActivityId(activityId);
         model.addAttribute("submissions", submissions);
         model.addAttribute("activityId", activityId);
         model.addAttribute("courseId", courseId);
@@ -97,7 +98,14 @@ public class SubmissionController {
             return "redirect:/login";
         }
 
-        submissionDAO.updateGrade(submissionId, grade, feedback);
+        Optional<Submission> submissionOpt = submissionRepository.findById(submissionId);
+        if (submissionOpt.isPresent()) {
+            Submission submission = submissionOpt.get();
+            submission.setGrade(grade);
+            submission.setFeedback(feedback);
+            submissionRepository.save(submission);
+        }
+
         return "redirect:/view-submissions?activityId=" + activityId + "&courseId=" + courseId;
     }
 }
