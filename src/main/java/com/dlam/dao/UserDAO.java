@@ -1,22 +1,28 @@
 package com.dlam.dao;
 
-import com.dlam.config.DatabaseConnection;
 import com.dlam.model.User;
-import java.sql.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Repository
 public class UserDAO {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     public boolean registerUser(User user) {
         String sql = "INSERT INTO users (username, password, full_name, role) VALUES (?, ?, ?, ?)";
-        try (Connection conn = DatabaseConnection.initializeDatabase();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getFullName());
-            pstmt.setString(4, user.getRole());
-
-            int rowsInserted = pstmt.executeUpdate();
+        try {
+            int rowsInserted = jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getFullName(),
+                    user.getRole());
             return rowsInserted > 0;
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -24,24 +30,23 @@ public class UserDAO {
 
     public User checkLogin(String username, String password) {
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-        try (Connection conn = DatabaseConnection.initializeDatabase();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, username);
-            pstmt.setString(2, password);
-
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                User user = new User();
-                user.setId(rs.getInt("id"));
-                user.setUsername(rs.getString("username"));
-                user.setPassword(rs.getString("password"));
-                user.setFullName(rs.getString("full_name"));
-                user.setRole(rs.getString("role"));
-                return user;
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+        try {
+            return jdbcTemplate.queryForObject(sql, new UserRowMapper(), username, password);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
         }
-        return null;
+    }
+
+    private static class UserRowMapper implements RowMapper<User> {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            user.setFullName(rs.getString("full_name"));
+            user.setRole(rs.getString("role"));
+            return user;
+        }
     }
 }

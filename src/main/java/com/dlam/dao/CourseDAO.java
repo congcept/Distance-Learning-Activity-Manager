@@ -1,54 +1,45 @@
 package com.dlam.dao;
 
 import com.dlam.model.Course;
-import java.sql.*;
-import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+@Repository
 public class CourseDAO {
-    private Connection conn;
 
-    public CourseDAO(Connection conn) {
-        this.conn = conn;
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-    public boolean addCourse(Course course) throws SQLException {
+    public boolean addCourse(Course course) {
         String sql = "INSERT INTO courses (title, description, instructor_id) VALUES (?, ?, ?)";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, course.getTitle());
-        ps.setString(2, course.getDescription());
-        ps.setInt(3, course.getInstructorId());
-        return ps.executeUpdate() > 0;
+        int rows = jdbcTemplate.update(sql, course.getTitle(), course.getDescription(), course.getInstructorId());
+        return rows > 0;
     }
 
-    public List<Course> getAllCourses() throws SQLException {
-        List<Course> list = new ArrayList<>();
+    public List<Course> getAllCourses() {
         String sql = "SELECT * FROM courses";
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql);
-        while (rs.next()) {
-            list.add(new Course(
-                    rs.getInt("id"),
-                    rs.getString("title"),
-                    rs.getString("description"),
-                    rs.getInt("instructor_id")));
-        }
-        return list;
+        return jdbcTemplate.query(sql, new CourseRowMapper());
     }
 
-    public List<Course> getCoursesByInstructor(int instructorId) throws SQLException {
-        List<Course> list = new ArrayList<>();
+    public List<Course> getCoursesByInstructor(int instructorId) {
         String sql = "SELECT * FROM courses WHERE instructor_id = ?";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, instructorId);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            list.add(new Course(
+        return jdbcTemplate.query(sql, new CourseRowMapper(), instructorId);
+    }
+
+    private static class CourseRowMapper implements RowMapper<Course> {
+        @Override
+        public Course mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Course(
                     rs.getInt("id"),
                     rs.getString("title"),
                     rs.getString("description"),
-                    rs.getInt("instructor_id")));
+                    rs.getInt("instructor_id"));
         }
-        return list;
     }
 }

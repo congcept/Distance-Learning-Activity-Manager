@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>View Submissions</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header}" th:with="backLink=@{/activities(courseId=${courseId})}"></div>
+        <h2 th:text="'Submissions for Activity ID: ' + ${activityId}">Submissions</h2>
+
+        <p th:if="${#lists.isEmpty(submissions)}">No submissions yet.</p>
+
+        <div th:each="s : ${submissions}" class="activity-card">
+            <p><strong th:text="'Student ID: ' + ${s.studentId}">Student ID</strong></p>
+            <p><strong th:text="'Submitted on: ' + ${s.submissionDate}">Date</strong></p>
+            <p><strong>Content:</strong><br> <span th:text="${s.content}">Content</span></p>
+
+            <hr>
+
+            <form th:action="@{/grade-submission}" method="post">
+                <input type="hidden" name="submissionId" th:value="${s.id}">
+                <input type="hidden" name="activityId" th:value="${activityId}">
+                <input type="hidden" name="courseId" th:value="${courseId}">
+
+                <label>Grade:</label>
+                <input type="text" name="grade" th:value="${s.grade}" placeholder="e.g. A, 90/100" required>
+
+                <label>Feedback:</label>
+                <textarea name="feedback" rows="3" th:text="${s.feedback}"></textarea>
+
+                <button type="submit">Update Grade</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

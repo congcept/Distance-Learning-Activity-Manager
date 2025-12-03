@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Course Details</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header}" th:with="backLink=@{/courses}"></div>
+
+        <h2 th:text="'Course ID: ' + ${courseId}">Course ID: 1</h2>
+
+        <div th:if="${session.user.role == 'INSTRUCTOR'}">
+            <a th:href="@{/create-activity(courseId=${courseId})}">Add Activity</a>
+        </div>
+
+        <h3>Activities</h3>
+
+        <p th:if="${#lists.isEmpty(activities)}">No activities yet.</p>
+
+        <div th:each="a : ${activities}" class="activity-card">
+            <div class="activity-title"><strong th:text="${a.title}">Title</strong></div>
+            <div class="activity-date">Due: <span th:text="${a.dueDate}">Date</span></div>
+            <div th:text="${a.description}">Description</div>
+
+            <div th:if="${session.user.role == 'STUDENT'}">
+                <br><br>
+                <a th:href="@{/submit-activity(activityId=${a.id}, courseId=${courseId})}">Submit Assignment</a>
+
+                <span th:if="${submittedActivityIds != null and #lists.contains(submittedActivityIds, a.id)}">
+                    | <a th:href="@{/view-my-submissions(activityId=${a.id}, courseId=${courseId})}">View Past
+                        Submissions</a>
+                </span>
+            </div>
+            <div th:if="${session.user.role == 'INSTRUCTOR'}">
+                <br><br>
+                <a th:href="@{/view-submissions(activityId=${a.id}, courseId=${courseId})}">View Submissions</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

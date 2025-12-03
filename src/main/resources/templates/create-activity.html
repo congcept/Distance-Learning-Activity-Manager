@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Create Activity</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header}" th:with="backLink=@{/activities(courseId=${courseId})}"></div>
+        <h2>Create Activity</h2>
+
+        <form method="post" th:action="@{/create-activity}">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+
+            Title: <input type="text" name="title" required><br><br>
+            Description:<br>
+            <textarea name="description" rows="5" cols="50"></textarea><br><br>
+
+            Due date: <input type="date" name="dueDate"><br><br>
+
+            <button type="submit">Create</button>
+        </form>
+    </div>
+</body>
+
+</html>

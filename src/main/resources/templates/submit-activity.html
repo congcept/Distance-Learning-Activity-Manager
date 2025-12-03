@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Submit Activity</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header}" th:with="backLink=@{/activities(courseId=${param.courseId})}"></div>
+        <h2>Submit Activity</h2>
+
+        <form method="post" th:action="@{/submit-activity}">
+            <input type="hidden" name="activityId" th:value="${activityId}">
+            <input type="hidden" name="courseId" th:value="${param.courseId}">
+
+            <label>Your Answer / Content:</label>
+            <textarea name="content" rows="10" cols="50" required></textarea><br><br>
+
+            <button type="submit">Submit Assignment</button>
+        </form>
+    </div>
+</body>
+
+</html>

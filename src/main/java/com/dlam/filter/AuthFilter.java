@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
+import jakarta.servlet.annotation.WebFilter;
+
+@WebFilter(urlPatterns = "/*")
 public class AuthFilter implements Filter {
 
     @Override
@@ -24,17 +27,15 @@ public class AuthFilter implements Filter {
         String path = req.getServletPath();
 
         // Allow access to public resources
-        boolean isLogin = path.equals("/login.jsp");
-        boolean isRegister = path.equals("/register.jsp");
-        boolean isAuthServlet = path.equals("/login") || path.equals("/register") || path.equals("/logout");
+        boolean isAuthPath = path.equals("/login") || path.equals("/register") || path.equals("/logout");
         boolean isCss = path.startsWith("/css/");
 
         boolean isLoggedIn = (session != null && session.getAttribute("user") != null);
 
-        if (isLoggedIn || isLogin || isRegister || isAuthServlet || isCss) {
+        if (isLoggedIn || isAuthPath || isCss) {
             chain.doFilter(request, response);
         } else {
-            res.sendRedirect(req.getContextPath() + "/login.jsp");
+            res.sendRedirect(req.getContextPath() + "/login");
         }
     }
 

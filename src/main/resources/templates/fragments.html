@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="header" class="header">
+        <div class="left-section">
+            <a th:if="${param.backLink}" th:href="${param.backLink}" class="back-btn">Back</a>
+            <div class="user-info">
+                <span th:if="${session.user}">Welcome, <strong th:text="${session.user.fullName}">User</strong> (<span
+                        th:text="${session.user.role}">Role</span>)</span>
+            </div>
+        </div>
+        <div class="actions">
+            <a th:if="${session.user}" th:href="@{/logout}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+</body>
+
+</html>

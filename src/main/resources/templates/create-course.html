@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Create Course</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header}" th:with="backLink=@{/courses}"></div>
+        <h2>Create New Course</h2>
+
+        <form method="post" th:action="@{/create-course}">
+            Title: <input type="text" name="title" required><br><br>
+
+            Description:<br>
+            <textarea name="description" rows="5" cols="50"></textarea><br><br>
+
+            <button type="submit">Create Course</button>
+        </form>
+    </div>
+</body>
+
+</html>
