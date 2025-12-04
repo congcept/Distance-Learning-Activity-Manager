@@ -18,7 +18,10 @@ public class AuthController {
     private UserRepository userRepository;
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(HttpSession session) {
+        if (session.getAttribute("user") != null) {
+            return "redirect:/courses";
+        }
         return "login";
     }
 
@@ -45,12 +48,22 @@ public class AuthController {
     @PostMapping("/login")
     public String loginUser(@RequestParam("username") String username,
             @RequestParam("password") String password,
-            HttpSession session) {
+            HttpSession session,
+            jakarta.servlet.http.HttpServletResponse response) {
 
         Optional<User> userOpt = userRepository.findByUsernameAndPassword(username, password);
 
         if (userOpt.isPresent()) {
-            session.setAttribute("user", userOpt.get());
+            User user = userOpt.get();
+            session.setAttribute("user", user);
+
+            // Always set remember me cookie
+            jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("dlam_user_id",
+                    String.valueOf(user.getId()));
+            cookie.setMaxAge(7 * 24 * 60 * 60); // 7 days
+            cookie.setPath("/");
+            response.addCookie(cookie);
+
             return "redirect:/courses";
         } else {
             return "redirect:/login?error=invalid";
@@ -58,8 +71,15 @@ public class AuthController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, jakarta.servlet.http.HttpServletResponse response) {
         session.invalidate();
+
+        // Clear remember me cookie
+        jakarta.servlet.http.Cookie cookie = new jakarta.servlet.http.Cookie("dlam_user_id", "");
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
         return "redirect:/login";
     }
 
