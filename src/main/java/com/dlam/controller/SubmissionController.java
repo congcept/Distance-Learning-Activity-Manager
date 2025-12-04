@@ -20,6 +20,9 @@ public class SubmissionController {
     @Autowired
     private SubmissionRepository submissionRepository;
 
+    @Autowired
+    private com.dlam.repository.ActivityRepository activityRepository;
+
     @GetMapping("/submit-activity")
     public String showSubmitForm(@RequestParam("activityId") String activityId,
             @RequestParam(value = "courseId", required = false) String courseId,
@@ -48,6 +51,16 @@ public class SubmissionController {
         if (content.trim().isEmpty() && file.isEmpty()) {
             return "redirect:/submit-activity?activityId=" + activityId + "&courseId=" + courseId
                     + "&error=emptySubmission";
+        }
+
+        // Check for single submission limit
+        com.dlam.model.Activity activity = activityRepository.findById(activityId).orElse(null);
+        if (activity != null && activity.isSingleSubmission()) {
+            List<Submission> existingSubmissions = submissionRepository.findByActivityIdAndStudentId(activityId,
+                    user.getId());
+            if (!existingSubmissions.isEmpty()) {
+                return "redirect:/activities?courseId=" + courseId + "&error=singleSubmissionLimit";
+            }
         }
 
         Submission submission = new Submission(activityId, user.getId(), content);

@@ -28,6 +28,9 @@ public class Activity {
     @Column(name = "original_filename")
     private String originalFilename;
 
+    @Column(name = "single_submission", nullable = false)
+    private boolean singleSubmission;
+
     public Activity() {
     }
 
@@ -100,5 +103,13 @@ public class Activity {
 
     public void setOriginalFilename(String originalFilename) {
         this.originalFilename = originalFilename;
+    }
+
+    public boolean isSingleSubmission() {
+        return singleSubmission;
+    }
+
+    public void setSingleSubmission(boolean singleSubmission) {
+        this.singleSubmission = singleSubmission;
     }
 }

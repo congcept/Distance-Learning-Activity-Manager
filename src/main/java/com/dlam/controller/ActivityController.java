@@ -41,20 +41,26 @@ public class ActivityController {
             return "redirect:/login";
         }
 
+        // Fetch course to display name
+        com.dlam.model.Course course = courseRepository.findById(courseId).orElse(null);
+        if (course == null) {
+            return "redirect:/courses?error=notFound";
+        }
+
         if ("STUDENT".equals(user.getRole())) {
             if (!enrollmentRepository.existsByStudentIdAndCourseId(user.getId(), courseId)) {
                 return "redirect:/courses?error=notEnrolled";
             }
         } else if ("INSTRUCTOR".equals(user.getRole())) {
             // Check if instructor owns the course
-            com.dlam.model.Course course = courseRepository.findById(courseId).orElse(null);
-            if (course == null || course.getInstructorId() != user.getId()) {
+            if (course.getInstructorId() != user.getId()) {
                 return "redirect:/courses?error=accessDenied";
             }
         }
 
         List<Activity> activities = activityRepository.findByCourseId(courseId);
         model.addAttribute("courseId", courseId);
+        model.addAttribute("course", course);
         model.addAttribute("activities", activities);
 
         if ("STUDENT".equals(user.getRole())) {
@@ -95,6 +101,7 @@ public class ActivityController {
             @RequestParam("description") String description,
             @RequestParam("dueDate") String dueDate,
             @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam(value = "singleSubmission", required = false) boolean singleSubmission,
             HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
@@ -109,6 +116,7 @@ public class ActivityController {
 
         Date sqlDate = dueDate.isEmpty() ? null : Date.valueOf(dueDate);
         Activity activity = new Activity(courseId, title, description, sqlDate);
+        activity.setSingleSubmission(singleSubmission);
 
         if (!file.isEmpty()) {
             try {
@@ -174,6 +182,7 @@ public class ActivityController {
             @RequestParam("description") String description,
             @RequestParam("dueDate") String dueDate,
             @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam(value = "singleSubmission", required = false) boolean singleSubmission,
             HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
@@ -194,6 +203,7 @@ public class ActivityController {
         activity.setTitle(title);
         activity.setDescription(description);
         activity.setDueDate(dueDate.isEmpty() ? null : Date.valueOf(dueDate));
+        activity.setSingleSubmission(singleSubmission);
 
         if (!file.isEmpty()) {
             try {

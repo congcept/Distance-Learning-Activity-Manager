@@ -10,7 +10,7 @@
     <div class="container">
         <div th:replace="~{fragments :: header(backLink=@{/courses})}"></div>
 
-        <h2 th:text="'Course ID: ' + ${courseId}">Course ID: 1</h2>
+        <h2 th:text="${course.title}">Course Name</h2>
 
         <div th:if="${session.user.role == 'INSTRUCTOR'}">
             <a th:href="@{/create-activity(courseId=${courseId})}">Add Activity</a>
@@ -30,7 +30,14 @@
 
             <div th:if="${session.user.role == 'STUDENT'}">
                 <br><br>
-                <a th:href="@{/submit-activity(activityId=${a.id}, courseId=${courseId})}">Submit Assignment</a>
+                <span
+                    th:if="${!a.singleSubmission or submittedActivityIds == null or !#lists.contains(submittedActivityIds, a.id)}">
+                    <a th:href="@{/submit-activity(activityId=${a.id}, courseId=${courseId})}">Submit Assignment</a>
+                </span>
+                <span
+                    th:if="${a.singleSubmission and submittedActivityIds != null and #lists.contains(submittedActivityIds, a.id)}">
+                    <em>Submitted (Single Submission Only)</em>
+                </span>
 
                 <span th:if="${submittedActivityIds != null and #lists.contains(submittedActivityIds, a.id)}">
                     | <a th:href="@{/view-my-submissions(activityId=${a.id}, courseId=${courseId})}">View Past
