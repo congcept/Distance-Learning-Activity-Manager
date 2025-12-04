@@ -115,7 +115,7 @@ public class SubmissionController {
             return "redirect:/login";
         }
 
-        List<Submission> submissions = submissionRepository.findByActivityId(activityId);
+        List<Submission> submissions = submissionRepository.findLatestSubmissionsByActivityId(activityId);
         model.addAttribute("submissions", submissions);
         model.addAttribute("activityId", activityId);
         model.addAttribute("courseId", courseId);
