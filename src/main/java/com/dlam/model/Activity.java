@@ -22,6 +22,12 @@ public class Activity {
     @Column(name = "due_date")
     private Date dueDate;
 
+    @Column(name = "file_path")
+    private String filePath;
+
+    @Column(name = "original_filename")
+    private String originalFilename;
+
     public Activity() {
     }
 
@@ -78,5 +84,21 @@ public class Activity {
 
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public String getOriginalFilename() {
+        return originalFilename;
+    }
+
+    public void setOriginalFilename(String originalFilename) {
+        this.originalFilename = originalFilename;
     }
 }

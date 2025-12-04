@@ -24,6 +24,9 @@
             <div class="activity-title"><strong th:text="${a.title}">Title</strong></div>
             <div class="activity-date">Due: <span th:text="${a.dueDate}">Date</span></div>
             <div th:text="${a.description}">Description</div>
+            <div th:if="${a.filePath != null}">
+                Attachment: <a th:href="@{${a.filePath}}" th:text="${a.originalFilename}" download>Download</a>
+            </div>
 
             <div th:if="${session.user.role == 'STUDENT'}">
                 <br><br>
@@ -36,7 +39,8 @@
             </div>
             <div th:if="${session.user.role == 'INSTRUCTOR'}">
                 <br><br>
-                <a th:href="@{/view-submissions(activityId=${a.id}, courseId=${courseId})}">View Submissions</a>
+                <a th:href="@{/view-submissions(activityId=${a.id}, courseId=${courseId})}">View Submissions</a> |
+                <a th:href="@{/edit-activity(activityId=${a.id}, courseId=${courseId})}">Edit</a>
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@
         <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
         <h2>Create Activity</h2>
 
-        <form method="post" th:action="@{/create-activity}">
+        <form method="post" th:action="@{/create-activity}" enctype="multipart/form-data">
             <input type="hidden" name="courseId" th:value="${courseId}">
 
             Title: <input type="text" name="title" required><br><br>
@@ -19,6 +19,8 @@
             <textarea name="description" rows="5" cols="50"></textarea><br><br>
 
             Due date: <input type="date" name="dueDate"><br><br>
+
+            Attachment: <input type="file" name="file"><br><br>
 
             <button type="submit">Create</button>
         </form>
