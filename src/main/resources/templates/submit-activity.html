@@ -11,6 +11,17 @@
         <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
         <h2>Submit Activity</h2>
 
+        <div th:if="${activity != null}"
+            style="margin-bottom: 2rem; padding: 1rem; background: #fff; border: 1px solid #eee; border-radius: 8px;">
+            <p style="font-size: 1.1em; font-weight: 500; margin-bottom: 0.5rem;" th:text="${activity.title}">Activity
+                Title</p>
+            <p th:text="${activity.description}">Description</p>
+            <div th:if="${activity.filePath != null}">
+                Attachment: <a th:href="@{${activity.filePath}}" th:text="${activity.originalFilename}"
+                    download>Download</a>
+            </div>
+        </div>
+
         <form method="post" th:action="@{/submit-activity}" enctype="multipart/form-data"
             onsubmit="return validateForm()">
             <input type="hidden" name="activityId" th:value="${activityId}">
@@ -24,6 +35,32 @@
 
             <button type="submit">Submit Assignment</button>
         </form>
+
+        <div class="comments-section">
+            <h3>Discussion / Q&A</h3>
+            <div class="comment-list">
+                <p th:if="${#lists.isEmpty(comments)}">No comments yet. Be the first to ask a question!</p>
+                <div th:each="comment : ${comments}" class="comment-card">
+                    <div class="comment-header">
+                        <span class="comment-author" th:text="${comment.authorName}">Author</span>
+                        <span class="comment-time"
+                            th:text="${#temporals.format(comment.postedAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                    </div>
+                    <div class="comment-content" th:text="${comment.content}">Content</div>
+                </div>
+            </div>
+
+            <form th:action="@{/add-comment}" method="post">
+                <input type="hidden" name="activityId" th:value="${activityId}">
+                <input type="hidden" name="courseId" th:value="${courseId}">
+                <input type="hidden" name="redirectUrl"
+                    th:value="'/submit-activity?activityId=' + ${activityId} + '&courseId=' + ${courseId}">
+
+                <textarea name="content" rows="3" placeholder="Ask a question or discuss this activity..."
+                    required></textarea>
+                <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 5px;">Post Comment</button>
+            </form>
+        </div>
 
         <script>
             function validateForm() {

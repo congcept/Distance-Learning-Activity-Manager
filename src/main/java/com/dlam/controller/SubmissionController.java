@@ -14,6 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Optional;
 
+import com.dlam.model.Activity;
+import com.dlam.model.ActivityComment;
+import com.dlam.repository.ActivityRepository;
+import com.dlam.repository.ActivityCommentRepository;
+import com.dlam.repository.UserRepository;
+
 @Controller
 public class SubmissionController {
 
@@ -21,10 +27,16 @@ public class SubmissionController {
     private SubmissionRepository submissionRepository;
 
     @Autowired
-    private com.dlam.repository.ActivityRepository activityRepository;
+    private ActivityRepository activityRepository;
+
+    @Autowired
+    private ActivityCommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/submit-activity")
-    public String showSubmitForm(@RequestParam("activityId") String activityId,
+    public String showSubmitForm(@RequestParam("activityId") int activityId,
             @RequestParam(value = "courseId", required = false) String courseId,
             HttpSession session,
             Model model) {
@@ -32,6 +44,19 @@ public class SubmissionController {
         if (user == null || !"STUDENT".equals(user.getRole())) {
             return "redirect:/login";
         }
+
+        Activity activity = activityRepository.findById(activityId).orElse(null);
+        if (activity != null) {
+            model.addAttribute("activity", activity);
+        }
+
+        List<ActivityComment> comments = commentRepository.findByActivityIdOrderByPostedAtAsc(activityId);
+        for (ActivityComment comment : comments) {
+            userRepository.findById(comment.getUserId()).ifPresent(u -> comment.setAuthorName(u.getFullName()));
+        }
+        model.addAttribute("comments", comments);
+        model.addAttribute("currentUserId", user.getId());
+
         model.addAttribute("activityId", activityId);
         model.addAttribute("courseId", courseId);
         return "submit-activity"; // Maps to submit-activity.jsp
@@ -54,7 +79,7 @@ public class SubmissionController {
         }
 
         // Check for single submission limit
-        com.dlam.model.Activity activity = activityRepository.findById(activityId).orElse(null);
+        Activity activity = activityRepository.findById(activityId).orElse(null);
         if (activity != null) {
             // Check deadline
             if (activity.getDueDate() != null
@@ -138,6 +163,14 @@ public class SubmissionController {
 
         List<Submission> submissions = submissionRepository.findLatestSubmissionsByActivityId(activityId);
         model.addAttribute("submissions", submissions);
+
+        List<ActivityComment> comments = commentRepository.findByActivityIdOrderByPostedAtAsc(activityId);
+        for (ActivityComment comment : comments) {
+            userRepository.findById(comment.getUserId()).ifPresent(u -> comment.setAuthorName(u.getFullName()));
+        }
+        model.addAttribute("comments", comments);
+        model.addAttribute("currentUserId", user.getId());
+
         model.addAttribute("activityId", activityId);
         model.addAttribute("courseId", courseId);
         return "view-submissions"; // Maps to view-submissions.jsp

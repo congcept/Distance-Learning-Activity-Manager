@@ -42,6 +42,32 @@
             </form>
         </div>
     </div>
+
+    <div class="comments-section">
+        <h3>Discussion / Q&A</h3>
+        <div class="comment-list">
+            <p th:if="${#lists.isEmpty(comments)}">No comments yet.</p>
+            <div th:each="comment : ${comments}" class="comment-card">
+                <div class="comment-header">
+                    <span class="comment-author" th:text="${comment.authorName}">Author</span>
+                    <span class="comment-time"
+                        th:text="${#temporals.format(comment.postedAt, 'dd-MM-yyyy HH:mm')}">Date</span>
+                </div>
+                <div class="comment-content" th:text="${comment.content}">Content</div>
+            </div>
+        </div>
+
+        <form th:action="@{/add-comment}" method="post">
+            <input type="hidden" name="activityId" th:value="${activityId}">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+            <input type="hidden" name="redirectUrl"
+                th:value="'/view-submissions?activityId=' + ${activityId} + '&courseId=' + ${courseId}">
+
+            <textarea name="content" rows="3" placeholder="Reply to students..." required></textarea>
+            <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 5px;">Post Comment</button>
+        </form>
+    </div>
+    </div>
 </body>
 
 </html>

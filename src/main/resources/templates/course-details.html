@@ -83,9 +83,8 @@
 
         <p th:if="${#lists.isEmpty(activities)}">No activities yet.</p>
 
-        <div th:each="a : ${activities}" class="activity-card"
-            th:classappend="${session.user.role == 'INSTRUCTOR'} ? 'clickable-card' : ''"
-            th:onclick="${session.user.role == 'INSTRUCTOR'} ? 'location.href=\'' + @{/view-submissions(activityId=${a.id}, courseId=${courseId})} + '\'' : null">
+        <div th:each="a : ${activities}" class="activity-card clickable-card"
+            th:onclick="${session.user.role == 'INSTRUCTOR'} ? 'location.href=\'' + @{/view-submissions(activityId=${a.id}, courseId=${courseId})} + '\'' : 'location.href=\'' + @{/submit-activity(activityId=${a.id}, courseId=${courseId})} + '\''">
 
             <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                 <div>
@@ -100,13 +99,6 @@
                         onclick="event.stopPropagation();" class="btn btn-primary"
                         style="padding: 5px 10px; font-size: 0.8em;">Edit</a>
                 </div>
-                <!-- View Past Submissions Button (Top Right for Students) -->
-                <div
-                    th:if="${session.user.role == 'STUDENT' and submittedActivityIds != null and #lists.contains(submittedActivityIds, a.id)}">
-                    <a th:href="@{/view-my-submissions(activityId=${a.id}, courseId=${courseId})}"
-                        class="btn btn-primary btn-sm" style="padding: 5px 10px; font-size: 0.8em;">View Past
-                        Submissions</a>
-                </div>
             </div>
 
             <div th:text="${a.description}">Description</div>
@@ -120,8 +112,6 @@
                 <span
                     th:if="${!a.singleSubmission or submittedActivityIds == null or !#lists.contains(submittedActivityIds, a.id)}">
                     <span th:if="${a.dueDate != null and a.dueDate.isBefore(now)}" class="error">Past Due</span>
-                    <a th:if="${a.dueDate == null or !a.dueDate.isBefore(now)}"
-                        th:href="@{/submit-activity(activityId=${a.id}, courseId=${courseId})}">Submit Assignment</a>
                 </span>
                 <span
                     th:if="${a.singleSubmission and submittedActivityIds != null and #lists.contains(submittedActivityIds, a.id)}">
