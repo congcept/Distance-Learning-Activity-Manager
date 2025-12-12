@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>My Grades</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .grades-table th,
+        .grades-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .grades-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-graded {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-submitted {
+            background-color: #e0f2fe;
+            color: #075985;
+        }
+
+        .status-missing {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=@{/courses})}"></div>
+
+        <h2>My Grades & Progress</h2>
+
+        <div th:if="${gradesByCourse.empty}">
+            <p>No enrolled courses found.</p>
+        </div>
+
+        <div th:each="entry : ${gradesByCourse}" class="card" style="margin-bottom: 2rem;">
+            <h3 th:text="${entry.key}"
+                style="border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 0;">Course Title</h3>
+
+            <table class="grades-table">
+                <thead>
+                    <tr>
+                        <th>Activity</th>
+                        <th>Due Date</th>
+                        <th>Submitted On</th>
+                        <th>Status</th>
+                        <th>Grade</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${entry.value}">
+                        <td th:text="${item.activityTitle}">Activity</td>
+                        <td
+                            th:text="${item.dueDate != null ? #temporals.format(item.dueDate, 'MMM dd, HH:mm') : 'No Deadline'}">
+                            Date</td>
+                        <td
+                            th:text="${item.submittedDate != null ? #temporals.format(item.submittedDate, 'MMM dd, HH:mm') : '-'}">
+                            -</td>
+                        <td>
+                            <span class="status-badge" th:classappend="'status-' + ${#strings.toLowerCase(item.status)}"
+                                th:text="${item.status}">Status</span>
+                        </td>
+                        <td th:text="${item.grade}" style="font-weight: bold;">Grade</td>
+                        <td th:text="${item.feedback}">Feedback</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

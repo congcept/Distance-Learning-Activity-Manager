@@ -68,13 +68,17 @@ public class CourseController {
             model.addAttribute("myCourses", myCourses);
             model.addAttribute("availableCourses", availableCourses);
 
-            // Widget: Upcoming Activities (Next 7 days? All upcoming?)
-            // Repository returns all future due dates ordered asc. Limit to 5.
-            List<com.dlam.model.Activity> upcoming = activityRepository.findUpcomingActivitiesByStudentId(user.getId());
-            // Limit to 5
-            if (upcoming.size() > 5) {
-                upcoming = upcoming.subList(0, 5);
+            // Widget: Due Soon (Next 7 days)
+            java.time.LocalDateTime now = java.time.LocalDateTime.now();
+            java.time.LocalDateTime nextWeek = now.plusDays(7);
+
+            // Check if we have enrolled courses before querying
+            List<com.dlam.model.Activity> upcoming = java.util.Collections.emptyList();
+            if (!enrolledCourseIds.isEmpty()) {
+                upcoming = activityRepository.findByCourseIdInAndDueDateBetweenOrderByDueDateAsc(enrolledCourseIds, now,
+                        nextWeek);
             }
+
             model.addAttribute("upcomingActivities", upcoming);
         } else if (user != null && "INSTRUCTOR".equals(user.getRole())) {
             // Instructors only see courses they created

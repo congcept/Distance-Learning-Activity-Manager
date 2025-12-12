@@ -20,6 +20,8 @@
             </div>
         </div>
         <div class="actions">
+            <a th:if="${session.user.role == 'STUDENT'}" th:href="@{/my-grades}" class="profile-btn"
+                style="margin-right: 10px;">My Grades</a>
             <a th:if="${session.user} and ${hideProfileBtn != true}" th:href="@{/profile}" class="profile-btn"
                 style="margin-right: 10px;">My
                 Profile</a>

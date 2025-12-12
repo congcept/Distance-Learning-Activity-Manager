@@ -85,7 +85,7 @@
 
             <div class="sidebar">
                 <div class="widget" th:if="${session.user.role == 'STUDENT'}">
-                    <h3>Upcoming Deadlines</h3>
+                    <h3>Due Soon (Next 7 Days)</h3>
                     <p th:if="${#lists.isEmpty(upcomingActivities)}">No upcoming deadlines.</p>
                     <ul class="widget-list">
                         <li th:each="a : ${upcomingActivities}">
