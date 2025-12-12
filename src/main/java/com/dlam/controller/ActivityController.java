@@ -64,7 +64,7 @@ public class ActivityController {
             }
         }
 
-        List<Activity> activities = activityRepository.findByCourseId(courseId);
+        List<Activity> activities = activityRepository.findByCourseIdOrderByIdDesc(courseId);
         List<com.dlam.model.Resource> resources = resourceRepository.findByCourseId(courseId);
         List<com.dlam.model.Announcement> announcements = announcementRepository
                 .findByCourseIdOrderByPostedDateDesc(courseId);

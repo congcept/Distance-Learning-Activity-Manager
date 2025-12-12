@@ -10,6 +10,8 @@ import java.util.List;
 public interface ActivityRepository extends JpaRepository<Activity, Integer> {
         List<Activity> findByCourseId(int courseId);
 
+        List<Activity> findByCourseIdOrderByIdDesc(int courseId);
+
         List<Activity> findByCourseIdInAndDueDateBetweenOrderByDueDateAsc(List<Integer> courseIds,
                         java.time.LocalDateTime start, java.time.LocalDateTime end);
 
