@@ -160,6 +160,24 @@ button[type="submit"],
 button[type="submit"]:hover,
 .btn-primary:hover {
     background-color: var(--primary-hover);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-danger,
+button[type="submit"].btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+    border: 1px solid transparent;
+}
+
+.btn-danger:hover,
+button[type="submit"].btn-danger:hover {
+    background-color: #dc2626;
+    /* Darker red */
+    color: white;
     text-decoration: none;
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
@@ -199,6 +217,11 @@ button[type="submit"]:hover,
     background-color: #fef2f2;
     /* Ultra light red */
     text-decoration: none;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
 }
 
 /* Forms */
@@ -308,6 +331,17 @@ li:hover {
     font-size: 0.875rem;
     color: var(--text-muted);
     margin-bottom: 0.75rem;
+}
+
+.clickable-card {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.clickable-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
 }
 
 /* Sidebar Widgets */

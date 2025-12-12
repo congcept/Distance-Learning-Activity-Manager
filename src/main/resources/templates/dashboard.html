@@ -14,7 +14,7 @@
         <div class="dashboard-grid">
             <div class="main-content">
                 <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
-                    <a th:href="@{/create-course}">Create New Course</a>
+                    <a th:href="@{/create-course}" class="btn btn-primary">Create New Course</a>
                     <br><br>
                 </div>
 
@@ -30,10 +30,11 @@
                     <h3>My Courses</h3>
                     <p th:if="${#lists.isEmpty(myCourses)}">You are not enrolled in any courses.</p>
                     <ul>
-                        <li th:each="c : ${myCourses}">
-                            <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
-                            <br>
-                            <a th:href="@{/activities(courseId=${c.id})}">View Activities</a>
+                        <li th:each="c : ${myCourses}" class="clickable-card"
+                            th:onclick="'location.href=\'' + @{/activities(courseId=${c.id})} + '\''">
+                            <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 4px;" th:text="${c.title}">
+                                Title</div>
+                            <div style="color: #64748b; font-size: 0.9em;" th:text="${c.description}">Desc</div>
                         </li>
                     </ul>
 
@@ -41,12 +42,17 @@
                     <p th:if="${#lists.isEmpty(availableCourses)}">No other courses available.</p>
                     <ul>
                         <li th:each="c : ${availableCourses}">
-                            <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
-                            <br>
-                            <form action="/enroll" method="post" style="display:inline;">
-                                <input type="hidden" name="courseId" th:value="${c.id}" />
-                                <button type="submit">Enroll</button>
-                            </form>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 4px;"
+                                        th:text="${c.title}">Title</div>
+                                    <div style="color: #64748b; font-size: 0.9em;" th:text="${c.description}">Desc</div>
+                                </div>
+                                <form action="/enroll" method="post" style="display:inline;">
+                                    <input type="hidden" name="courseId" th:value="${c.id}" />
+                                    <button type="submit" class="btn btn-primary">Enroll</button>
+                                </form>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -54,16 +60,24 @@
                 <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
                     <h3>My Courses</h3>
                     <ul>
-                        <li th:each="c : ${myCourses}">
-                            <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
-                            <br>
-                            <a th:href="@{/activities(courseId=${c.id})}">View Activities</a> |
-                            <a th:href="@{/edit-course(courseId=${c.id})}">Edit</a>
-                            <form th:action="@{/delete-course}" method="post" style="display:inline;"
-                                onsubmit="return confirm('Are you sure? This will delete all activities and submissions.');">
-                                <input type="hidden" name="courseId" th:value="${c.id}" />
-                                <button type="submit" class="btn-text-danger">Delete</button>
-                            </form>
+                        <li th:each="c : ${myCourses}" class="clickable-card"
+                            th:onclick="'location.href=\'' + @{/activities(courseId=${c.id})} + '\''"
+                            style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 1.1em; font-weight: bold; margin-bottom: 4px;"
+                                    th:text="${c.title}">Title</div>
+                                <div style="color: #64748b; font-size: 0.9em;" th:text="${c.description}">Desc</div>
+                            </div>
+                            <div>
+                                <a th:href="@{/edit-course(courseId=${c.id})}" onclick="event.stopPropagation();"
+                                    class="btn btn-primary btn-sm" style="margin-right: 5px;">Edit</a>
+                                <form th:action="@{/delete-course}" method="post" style="display:inline;"
+                                    onsubmit="return confirm('Are you sure? This will delete all activities and submissions.');"
+                                    onclick="event.stopPropagation();">
+                                    <input type="hidden" name="courseId" th:value="${c.id}" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
                         </li>
                     </ul>
                 </div>

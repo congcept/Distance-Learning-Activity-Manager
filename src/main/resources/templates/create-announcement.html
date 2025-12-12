@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Make Announcement</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
+        <h2>Make Announcement</h2>
+
+        <form th:action="@{/create-announcement}" method="post">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required placeholder="Important Update">
+            </div>
+
+            <div class="form-group">
+                <label for="content">Content</label>
+                <textarea id="content" name="content" rows="6" required
+                    placeholder="Write your announcement here..."></textarea>
+            </div>
+
+            <button type="submit">Post Announcement</button>
+        </form>
+    </div>
+</body>
+
+</html>
