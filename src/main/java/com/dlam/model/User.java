@@ -22,6 +22,9 @@ public class User {
     @Column(nullable = false)
     private String role; // "STUDENT" or "INSTRUCTOR"
 
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
     @Column(name = "created_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
@@ -82,5 +85,13 @@ public class User {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

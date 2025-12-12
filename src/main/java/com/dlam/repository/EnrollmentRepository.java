@@ -11,4 +11,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer>
     List<Enrollment> findByStudentId(int studentId);
 
     boolean existsByStudentIdAndCourseId(int studentId, int courseId);
+
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByStudentIdAndCourseId(int studentId, int courseId);
+
+    @org.springframework.transaction.annotation.Transactional
+    void deleteByCourseId(int courseId);
 }

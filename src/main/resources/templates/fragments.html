@@ -16,6 +16,10 @@
             <a th:if="${session.user}" th:href="@{/logout}" class="logout-btn">Logout</a>
         </div>
     </div>
+
+    <div th:fragment="footer" class="footer">
+        <p>&copy; 2025 Distance Learning Activity Manager. All rights reserved.</p>
+    </div>
 </body>
 
 </html>

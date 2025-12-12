@@ -19,7 +19,8 @@
             Description:<br>
             <textarea name="description" rows="5" cols="50" th:text="${activity.description}"></textarea><br><br>
 
-            Due date: <input type="date" name="dueDate" th:value="${activity.dueDate}"><br><br>
+            <label for="dueDate">Due Date (Optional):</label>
+            <input type="datetime-local" id="dueDate" name="dueDate" th:value="${activity.dueDate}"><br><br>
 
             <div th:if="${activity.filePath != null}">
                 Current Attachment: <span th:text="${activity.originalFilename}">filename</span><br>

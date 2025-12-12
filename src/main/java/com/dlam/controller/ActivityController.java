@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,6 +62,7 @@ public class ActivityController {
         model.addAttribute("courseId", courseId);
         model.addAttribute("course", course);
         model.addAttribute("activities", activities);
+        model.addAttribute("now", LocalDateTime.now());
 
         if ("STUDENT".equals(user.getRole())) {
             List<Submission> submissions = submissionRepository.findByStudentId(user.getId());
@@ -114,8 +115,12 @@ public class ActivityController {
             return "redirect:/courses?error=accessDenied";
         }
 
-        Date sqlDate = dueDate.isEmpty() ? null : Date.valueOf(dueDate);
-        Activity activity = new Activity(courseId, title, description, sqlDate);
+        LocalDateTime dateTime = null;
+        if (dueDate != null && !dueDate.isEmpty()) {
+            dateTime = LocalDateTime.parse(dueDate);
+        }
+
+        Activity activity = new Activity(courseId, title, description, dateTime);
         activity.setSingleSubmission(singleSubmission);
 
         if (!file.isEmpty()) {
@@ -202,7 +207,13 @@ public class ActivityController {
 
         activity.setTitle(title);
         activity.setDescription(description);
-        activity.setDueDate(dueDate.isEmpty() ? null : Date.valueOf(dueDate));
+
+        if (dueDate != null && !dueDate.isEmpty()) {
+            activity.setDueDate(LocalDateTime.parse(dueDate));
+        } else {
+            activity.setDueDate(null);
+        }
+
         activity.setSingleSubmission(singleSubmission);
 
         if (!file.isEmpty()) {

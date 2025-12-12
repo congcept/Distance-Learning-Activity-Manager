@@ -95,17 +95,39 @@ public class AuthController {
     @PostMapping("/profile")
     public String updateProfile(@RequestParam("fullname") String fullName,
             @RequestParam("password") String password,
+            @RequestParam("profilePicture") org.springframework.web.multipart.MultipartFile profilePicture,
             HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
         }
 
-        userRepository.updateUser(fullName, password, user.getId());
-
-        // Update session with new values
         user.setFullName(fullName);
         user.setPassword(password);
+
+        if (!profilePicture.isEmpty()) {
+            try {
+                String uploadDir = "uploads/";
+                java.io.File directory = new java.io.File(uploadDir);
+                if (!directory.exists()) {
+                    directory.mkdirs();
+                }
+
+                String originalFilename = profilePicture.getOriginalFilename();
+                String uniqueFilename = java.util.UUID.randomUUID().toString() + "_" + originalFilename;
+                String filePath = uploadDir + uniqueFilename;
+
+                profilePicture.transferTo(new java.io.File(new java.io.File(filePath).getAbsolutePath()));
+                user.setProfilePicture("/uploads/" + uniqueFilename);
+            } catch (java.io.IOException e) {
+                e.printStackTrace();
+                return "redirect:/profile?error=uploadFailed";
+            }
+        }
+
+        userRepository.save(user);
+
+        // Update session with new values
         session.setAttribute("user", user);
 
         return "redirect:/courses?success=profileUpdated";

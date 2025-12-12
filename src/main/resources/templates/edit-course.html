@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Edit Course</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=@{/courses})}"></div>
+        <h2>Edit Course</h2>
+
+        <div th:if="${param.error}" class="error">
+            <p th:if="${param.error == 'notFound'}">Course not found.</p>
+            <p th:if="${param.error == 'accessDenied'}">You do not have permission to edit this course.</p>
+        </div>
+
+        <form method="post" th:action="@{/edit-course}" th:object="${course}">
+            <input type="hidden" name="courseId" th:value="${course.id}">
+
+            <label>Course Title:</label>
+            <input type="text" name="title" th:value="${course.title}" required><br><br>
+
+            <label>Description:</label>
+            <textarea name="description" th:text="${course.description}" rows="5" cols="40"></textarea><br><br>
+
+            <button type="submit">Update Course</button>
+        </form>
+    </div>
+</body>
+
+</html>

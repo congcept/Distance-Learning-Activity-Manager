@@ -1,7 +1,7 @@
 package com.dlam.model;
 
 import jakarta.persistence.*;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "activities")
@@ -20,7 +20,7 @@ public class Activity {
     private String description;
 
     @Column(name = "due_date")
-    private Date dueDate;
+    private LocalDateTime dueDate;
 
     @Column(name = "file_path")
     private String filePath;
@@ -34,14 +34,14 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity(int courseId, String title, String description, Date dueDate) {
+    public Activity(int courseId, String title, String description, LocalDateTime dueDate) {
         this.courseId = courseId;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
     }
 
-    public Activity(int id, int courseId, String title, String description, Date dueDate) {
+    public Activity(int id, int courseId, String title, String description, LocalDateTime dueDate) {
         this.id = id;
         this.courseId = courseId;
         this.title = title;
@@ -81,11 +81,11 @@ public class Activity {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 

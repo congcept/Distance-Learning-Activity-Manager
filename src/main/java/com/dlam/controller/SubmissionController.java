@@ -55,11 +55,19 @@ public class SubmissionController {
 
         // Check for single submission limit
         com.dlam.model.Activity activity = activityRepository.findById(activityId).orElse(null);
-        if (activity != null && activity.isSingleSubmission()) {
-            List<Submission> existingSubmissions = submissionRepository.findByActivityIdAndStudentId(activityId,
-                    user.getId());
-            if (!existingSubmissions.isEmpty()) {
-                return "redirect:/activities?courseId=" + courseId + "&error=singleSubmissionLimit";
+        if (activity != null) {
+            // Check deadline
+            if (activity.getDueDate() != null
+                    && activity.getDueDate().isBefore(java.time.LocalDateTime.now())) {
+                return "redirect:/activities?courseId=" + courseId + "&error=pastDue";
+            }
+
+            if (activity.isSingleSubmission()) {
+                List<Submission> existingSubmissions = submissionRepository.findByActivityIdAndStudentId(activityId,
+                        user.getId());
+                if (!existingSubmissions.isEmpty()) {
+                    return "redirect:/activities?courseId=" + courseId + "&error=singleSubmissionLimit";
+                }
             }
         }
 

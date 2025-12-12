@@ -17,4 +17,8 @@ public interface SubmissionRepository extends JpaRepository<Submission, Integer>
     @org.springframework.data.jpa.repository.Query("SELECT s FROM Submission s WHERE s.activityId = :activityId AND s.id IN (SELECT MAX(s2.id) FROM Submission s2 WHERE s2.activityId = :activityId GROUP BY s2.studentId)")
     List<Submission> findLatestSubmissionsByActivityId(
             @org.springframework.data.repository.query.Param("activityId") int activityId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(s) FROM Submission s JOIN Activity a ON s.activityId = a.id JOIN Course c ON a.courseId = c.id WHERE c.instructorId = :instructorId AND s.grade IS NULL")
+    long countPendingSubmissionsByInstructorId(
+            @org.springframework.data.repository.query.Param("instructorId") int instructorId);
 }

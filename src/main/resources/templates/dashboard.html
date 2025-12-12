@@ -7,48 +7,109 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container dashboard-container">
         <div th:replace="~{fragments :: header(backLink=null)}"></div>
 
-        <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
-            <a th:href="@{/create-course}">Create New Course</a>
-            <br><br>
-        </div>
+        <div class="dashboard-grid">
+            <div class="main-content">
+                <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
+                    <a th:href="@{/create-course}">Create New Course</a>
+                    <br><br>
+                </div>
 
-        <div th:if="${session.user != null and session.user.role == 'STUDENT'}">
-            <h3>My Courses</h3>
-            <p th:if="${#lists.isEmpty(myCourses)}">You are not enrolled in any courses.</p>
-            <ul>
-                <li th:each="c : ${myCourses}">
-                    <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
-                    <br>
-                    <a th:href="@{/activities(courseId=${c.id})}">View Activities</a>
-                </li>
-            </ul>
-
-            <h3>Available Courses</h3>
-            <p th:if="${#lists.isEmpty(availableCourses)}">No other courses available.</p>
-            <ul>
-                <li th:each="c : ${availableCourses}">
-                    <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
-                    <br>
-                    <form action="/enroll" method="post" style="display:inline;">
-                        <input type="hidden" name="courseId" th:value="${c.id}" />
-                        <button type="submit">Enroll</button>
+                <div th:if="${session.user != null}">
+                    <form th:action="@{/courses}" method="get" style="margin-bottom: 20px;">
+                        <input type="text" name="search" placeholder="Search courses..." th:value="${search}">
+                        <button type="submit">Search</button>
+                        <a th:if="${search}" th:href="@{/courses}" class="btn-text">Clear</a>
                     </form>
-                </li>
-            </ul>
+                </div>
+
+                <div th:if="${session.user != null and session.user.role == 'STUDENT'}">
+                    <h3>My Courses</h3>
+                    <p th:if="${#lists.isEmpty(myCourses)}">You are not enrolled in any courses.</p>
+                    <ul>
+                        <li th:each="c : ${myCourses}">
+                            <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
+                            <br>
+                            <a th:href="@{/activities(courseId=${c.id})}">View Activities</a>
+                        </li>
+                    </ul>
+
+                    <h3>Available Courses</h3>
+                    <p th:if="${#lists.isEmpty(availableCourses)}">No other courses available.</p>
+                    <ul>
+                        <li th:each="c : ${availableCourses}">
+                            <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
+                            <br>
+                            <form action="/enroll" method="post" style="display:inline;">
+                                <input type="hidden" name="courseId" th:value="${c.id}" />
+                                <button type="submit">Enroll</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+                <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
+                    <h3>My Courses</h3>
+                    <ul>
+                        <li th:each="c : ${myCourses}">
+                            <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
+                            <br>
+                            <a th:href="@{/activities(courseId=${c.id})}">View Activities</a> |
+                            <a th:href="@{/edit-course(courseId=${c.id})}">Edit</a>
+                            <form th:action="@{/delete-course}" method="post" style="display:inline;"
+                                onsubmit="return confirm('Are you sure? This will delete all activities and submissions.');">
+                                <input type="hidden" name="courseId" th:value="${c.id}" />
+                                <button type="submit" class="btn-text-danger">Delete</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="widget" th:if="${session.user.role == 'STUDENT'}">
+                    <h3>Upcoming Deadlines</h3>
+                    <p th:if="${#lists.isEmpty(upcomingActivities)}">No upcoming deadlines.</p>
+                    <ul class="widget-list">
+                        <li th:each="a : ${upcomingActivities}">
+                            <div><strong th:text="${a.title}">Activity</strong></div>
+                            <div class="subtitle" th:text="${a.dueDate}">Date</div>
+                            <a th:href="@{/submit-activity(activityId=${a.id}, courseId=${a.courseId})}">View</a>
+                        </li>
+                    </ul>
+                </div>
+
+
+
+                <div class="widget" th:if="${session.user.role == 'INSTRUCTOR'}">
+                    <h3>Pending Grading</h3>
+                    <p th:if="${pendingGradingMap == null or pendingGradingMap.isEmpty()}">No submissions to grade.</p>
+                    <div th:each="entry : ${pendingGradingMap}">
+                        <details style="margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                            <summary style="cursor: pointer; font-weight: 600; color: #34495e; outline: none;">
+                                <span th:text="${entry.key.title}">Course Title</span>
+                                <span style="font-size: 0.8em; color: #e74c3c; font-weight: normal;"
+                                    th:text="'(' + ${entry.value.size()} + ')'"> (Count)</span>
+                            </summary>
+                            <ul class="widget-list" style="margin-top: 5px; padding-left: 15px;">
+                                <li th:each="a : ${entry.value}">
+                                    <div><strong th:text="${a.title}">Activity</strong></div>
+                                    <div class="subtitle"
+                                        th:text="${a.dueDate != null ? #temporals.format(a.dueDate, 'dd-MM-yyyy HH:mm') : 'No Deadline'}">
+                                        Date</div>
+                                    <a th:href="@{/view-submissions(activityId=${a.id}, courseId=${entry.key.id})}">Grade
+                                        Submissions</a>
+                                </li>
+                            </ul>
+                        </details>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div th:if="${session.user != null and session.user.role == 'INSTRUCTOR'}">
-            <ul>
-                <li th:each="c : ${myCourses}">
-                    <strong th:text="${c.title}">Title</strong> - <span th:text="${c.description}">Desc</span>
-                    <br>
-                    <a th:href="@{/activities(courseId=${c.id})}">View Activities</a>
-                </li>
-            </ul>
-        </div>
+        <div th:replace="~{fragments :: footer}"></div>
     </div>
 </body>
 

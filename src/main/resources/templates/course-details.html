@@ -10,7 +10,16 @@
     <div class="container">
         <div th:replace="~{fragments :: header(backLink=@{/courses})}"></div>
 
-        <h2 th:text="${course.title}">Course Name</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 th:text="${course.title}">Course Name</h2>
+            <div th:if="${session.user.role == 'STUDENT'}">
+                <form th:action="@{/unenroll}" method="post"
+                    onsubmit="return confirm('Are you sure you want to unenroll?');">
+                    <input type="hidden" name="courseId" th:value="${courseId}" />
+                    <button type="submit" class="btn-danger">Unenroll</button>
+                </form>
+            </div>
+        </div>
 
         <div th:if="${session.user.role == 'INSTRUCTOR'}">
             <a th:href="@{/create-activity(courseId=${courseId})}">Add Activity</a>
@@ -22,7 +31,9 @@
 
         <div th:each="a : ${activities}" class="activity-card">
             <div class="activity-title"><strong th:text="${a.title}">Title</strong></div>
-            <div class="activity-date">Due: <span th:text="${a.dueDate}">Date</span></div>
+            <div class="activity-date">Due: <span
+                    th:text="${a.dueDate != null ? #temporals.format(a.dueDate, 'dd-MM-yyyy HH:mm') : 'No Deadline'}">Date</span>
+            </div>
             <div th:text="${a.description}">Description</div>
             <div th:if="${a.filePath != null}">
                 Attachment: <a th:href="@{${a.filePath}}" th:text="${a.originalFilename}" download>Download</a>
@@ -32,7 +43,9 @@
                 <br><br>
                 <span
                     th:if="${!a.singleSubmission or submittedActivityIds == null or !#lists.contains(submittedActivityIds, a.id)}">
-                    <a th:href="@{/submit-activity(activityId=${a.id}, courseId=${courseId})}">Submit Assignment</a>
+                    <span th:if="${a.dueDate != null and a.dueDate.isBefore(now)}" class="error">Past Due</span>
+                    <a th:if="${a.dueDate == null or !a.dueDate.isBefore(now)}"
+                        th:href="@{/submit-activity(activityId=${a.id}, courseId=${courseId})}">Submit Assignment</a>
                 </span>
                 <span
                     th:if="${a.singleSubmission and submittedActivityIds != null and #lists.contains(submittedActivityIds, a.id)}">
