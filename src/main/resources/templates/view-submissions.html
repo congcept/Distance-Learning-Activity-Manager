@@ -30,6 +30,7 @@
                 <input type="hidden" name="submissionId" th:value="${s.id}">
                 <input type="hidden" name="activityId" th:value="${activityId}">
                 <input type="hidden" name="courseId" th:value="${courseId}">
+                <input type="hidden" name="returnTo" th:value="${param.returnTo}">
 
                 <label>Grade:</label>
                 <input type="text" name="grade" th:value="${s.grade}" placeholder="e.g. A, 90/100" required>

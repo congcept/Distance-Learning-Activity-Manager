@@ -149,6 +149,7 @@ public class SubmissionController {
             @RequestParam("feedback") String feedback,
             @RequestParam("activityId") String activityId,
             @RequestParam("courseId") String courseId,
+            @RequestParam(value = "returnTo", required = false) String returnTo,
             HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null || !"INSTRUCTOR".equals(user.getRole())) {
@@ -161,6 +162,10 @@ public class SubmissionController {
             submission.setGrade(grade);
             submission.setFeedback(feedback);
             submissionRepository.save(submission);
+        }
+
+        if ("gradebook".equals(returnTo)) {
+            return "redirect:/gradebook?courseId=" + courseId;
         }
 
         return "redirect:/view-submissions?activityId=" + activityId + "&courseId=" + courseId;

@@ -10,6 +10,8 @@ import java.util.List;
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Integer> {
     List<Enrollment> findByStudentId(int studentId);
 
+    List<Enrollment> findByCourseId(int courseId);
+
     boolean existsByStudentIdAndCourseId(int studentId, int courseId);
 
     @org.springframework.transaction.annotation.Transactional

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="'Gradebook - ' + ${course.title}">Gradebook</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .gradebook-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .gradebook-table th,
+        .gradebook-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .gradebook-table th {
+            background-color: #f2f2f2;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .gradebook-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .gradebook-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .grade-cell {
+            font-weight: 500;
+        }
+
+        .no-submission {
+            color: #bbb;
+        }
+
+        .pending {
+            color: #d35400;
+            /* Orange */
+            font-style: italic;
+        }
+
+        .graded {
+            color: #333;
+        }
+
+        .grade-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .grade-link:hover {
+            background-color: #e8f4fd;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" style="max-width: 1200px;">
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${course.id})})}"></div>
+
+        <h2>Gradebook: <span th:text="${course.title}">Course Name</span></h2>
+
+        <!-- Gradebook Table -->
+        <div style="overflow-x: auto;">
+            <table class="gradebook-table">
+                <thead>
+                    <tr>
+                        <th style="min-width: 200px;">Student Name</th>
+                        <!-- Loop through activities for headers -->
+                        <th th:each="activity : ${activities}">
+                            <div th:text="${activity.title}">Activity</div>
+                            <small style="font-weight: normal; color: #666;"
+                                th:text="${activity.dueDate != null ? #temporals.format(activity.dueDate, 'dd/MM') : 'No Date'}">Date</small>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(students)}">
+                        <td th:colspan="${#lists.size(activities) + 1}">No students enrolled.</td>
+                    </tr>
+                    <tr th:each="student : ${students}">
+                        <td style="text-align: left;">
+                            <strong th:text="${student.fullName}">Name</strong>
+                            <br><small th:text="${student.username}">Email</small>
+                        </td>
+
+                        <!-- Loop through activities for cells -->
+                        <td th:each="activity : ${activities}" class="grade-cell">
+                            <!-- Look up submission in map -->
+                            <th:block th:with="submission=${gradeMap.get(student.id).get(activity.id)}">
+
+                                <a th:if="${submission != null}"
+                                    th:href="@{/view-submissions(activityId=${activity.id}, courseId=${course.id}, returnTo='gradebook')}"
+                                    class="grade-link">
+
+                                    <!-- Graded -->
+                                    <span th:if="${submission.grade != null}" class="graded">
+                                        <span th:text="${submission.grade}">95</span>
+                                    </span>
+
+                                    <!-- Pending -->
+                                    <span th:if="${submission.grade == null}" class="pending">
+                                        Pending
+                                    </span>
+
+                                </a>
+
+                                <!-- No Submission -->
+                                <span th:if="${submission == null}" class="no-submission">
+                                    -
+                                </span>
+
+                            </th:block>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>

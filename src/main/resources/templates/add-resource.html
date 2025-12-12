@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Add Resource - DLAM</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <div class="container">
+        <div th:replace="~{fragments :: header(backLink=@{/activities(courseId=${courseId})})}"></div>
+
+        <h2>Add New Resource</h2>
+
+        <div th:if="${param.error}" class="alert alert-danger" style="color: red; margin-bottom: 20px;">
+            Upload failed. Please try again.
+        </div>
+
+        <form action="/add-resource" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="courseId" th:value="${courseId}">
+
+            <label for="title">Resource Title</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="description">Description (Optional)</label>
+            <textarea id="description" name="description" rows="3"></textarea>
+
+            <label for="file">File (PDF, Doc, Slide, etc.)</label>
+            <input type="file" id="file" name="file" required>
+
+            <button type="submit">Upload Resource</button>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -32,6 +32,9 @@ public class ActivityController {
     @Autowired
     private com.dlam.repository.CourseRepository courseRepository;
 
+    @Autowired
+    private com.dlam.repository.ResourceRepository resourceRepository;
+
     @GetMapping("/activities")
     public String listActivities(@RequestParam("courseId") int courseId,
             HttpSession session,
@@ -59,9 +62,12 @@ public class ActivityController {
         }
 
         List<Activity> activities = activityRepository.findByCourseId(courseId);
+        List<com.dlam.model.Resource> resources = resourceRepository.findByCourseId(courseId);
+
         model.addAttribute("courseId", courseId);
         model.addAttribute("course", course);
         model.addAttribute("activities", activities);
+        model.addAttribute("resources", resources);
         model.addAttribute("now", LocalDateTime.now());
 
         if ("STUDENT".equals(user.getRole())) {
