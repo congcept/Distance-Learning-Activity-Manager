@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
+<head th:fragment="head-meta">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Common CSS if you want to include it here, but usually it's in individual pages or a layout -->
+</head>
+
 <body>
     <div th:fragment="header(backLink)" class="header">
         <div class="left-section">
@@ -11,7 +20,8 @@
             </div>
         </div>
         <div class="actions">
-            <a th:if="${session.user}" th:href="@{/profile}" class="profile-btn" style="margin-right: 10px;">My
+            <a th:if="${session.user} and ${hideProfileBtn != true}" th:href="@{/profile}" class="profile-btn"
+                style="margin-right: 10px;">My
                 Profile</a>
             <a th:if="${session.user}" th:href="@{/logout}" class="logout-btn">Logout</a>
         </div>

@@ -3,34 +3,37 @@
 
 <head>
     <title>My Profile - DLAM</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
     <div class="container">
-        <div th:replace="~{fragments :: header(backLink=@{/courses})}"></div>
+        <th:block th:with="hideProfileBtn=true">
+            <div th:replace="~{fragments :: header(backLink=@{/courses})}"></div>
+        </th:block>
 
         <h2>Profile</h2>
 
-        <div th:if="${session.user.profilePicture != null}">
+        <div th:if="${session.user.profilePicture != null}" style="text-align: center; margin-bottom: 2rem;">
             <img th:src="@{${session.user.profilePicture}}" alt="Profile Picture" width="100" height="100"
-                style="border-radius: 50%;">
+                style="border-radius: 50%; border: 4px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         </div>
 
         <form method="post" th:action="@{/profile}" enctype="multipart/form-data">
-            <label>Username:</label>
-            <input type="text" th:value="${session.user.username}" disabled><br><br>
+            <label>Username</label>
+            <input type="text" th:value="${session.user.username}" disabled style="background-color: #f1f5f9;">
 
-            <label>Full Name:</label>
-            <input type="text" name="fullname" th:value="${session.user.fullName}" required><br><br>
+            <label>Full Name</label>
+            <input type="text" name="fullname" th:value="${session.user.fullName}" required>
 
-            <label>Password:</label>
-            <input type="password" name="password" th:value="${session.user.password}" required><br><br>
+            <label>Password</label>
+            <input type="password" name="password" th:value="${session.user.password}" required>
 
-            <label>Profile Picture:</label>
-            <input type="file" name="profilePicture"><br><br>
+            <label>Profile Picture</label>
+            <input type="file" name="profilePicture" style="padding: 10px; background: white;">
 
-            <button type="submit">Update Profile</button>
+            <button type="submit" style="margin-top: 1rem;">Update Profile</button>
         </form>
     </div>
 </body>

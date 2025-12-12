@@ -3,6 +3,7 @@
 
 <head>
     <title>Create Course</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -12,10 +13,11 @@
         <h2>Create New Course</h2>
 
         <form method="post" th:action="@{/create-course}">
-            Title: <input type="text" name="title" required><br><br>
+            <label>Course Title</label>
+            <input type="text" name="title" required placeholder="e.g. Intro to Computer Science">
 
-            Description:<br>
-            <textarea name="description" rows="5" cols="50"></textarea><br><br>
+            <label>Description</label>
+            <textarea name="description" rows="5" placeholder="Enter course description..."></textarea>
 
             <button type="submit">Create Course</button>
         </form>

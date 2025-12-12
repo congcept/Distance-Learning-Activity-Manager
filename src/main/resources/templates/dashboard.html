@@ -3,11 +3,12 @@
 
 <head>
     <title>Dashboard - DLAM</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
-    <div class="container dashboard-container">
+    <div class="container">
         <div th:replace="~{fragments :: header(backLink=null)}"></div>
 
         <div class="dashboard-grid">

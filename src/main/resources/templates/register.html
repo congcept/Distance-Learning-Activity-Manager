@@ -3,28 +3,35 @@
 
 <head>
     <title>Register - DLAM</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
-    <div class="container">
-        <h2>Register</h2>
+    <div class="container" style="max-width: 400px; margin-top: 50px;">
+        <h2 style="text-align: center;">Register</h2>
         <form th:action="@{/register}" method="post">
-            <label>Full Name:</label>
-            <input type="text" name="fullname" required><br>
-            <label>Username:</label>
-            <input type="text" name="username" required><br>
-            <label>Password:</label>
-            <input type="password" name="password" required><br>
-            <label>Role:</label>
+            <label>Full Name</label>
+            <input type="text" name="fullname" required>
+
+            <label>Username</label>
+            <input type="text" name="username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" required>
+
+            <label>Role</label>
             <select name="role">
                 <option value="STUDENT">Student</option>
                 <option value="INSTRUCTOR">Instructor</option>
-            </select><br>
-            <button type="submit">Register</button>
+            </select>
+
+            <button type="submit" style="width: 100%; margin-top: 1rem;">Register</button>
         </form>
-        <a th:href="@{/login}">Already have an account? Login</a>
-        <div th:if="${param.error}" style="color: red;">
+        <p style="text-align: center; margin-top: 1rem;">
+            Already have an account? <a th:href="@{/login}">Login here</a>
+        </p>
+        <div th:if="${param.error}" class="error">
             Registration failed. Try again.
         </div>
     </div>

@@ -3,24 +3,27 @@
 
 <head>
     <title>Login</title>
+    <div th:replace="~{fragments :: head-meta}"></div>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body>
-    <div class="container">
-        <h2>Login</h2>
+    <div class="container" style="max-width: 400px; margin-top: 100px;">
+        <h2 style="text-align: center;">Login</h2>
         <form th:action="@{/login}" method="post">
-            <label>Username:</label>
-            <input type="text" name="username" required><br>
-            <label>Password:</label>
-            <input type="password" name="password" required><br>
-            <button type="submit">Login</button>
+            <label>Username</label>
+            <input type="text" name="username" required>
+            <label>Password</label>
+            <input type="password" name="password" required>
+            <button type="submit" style="width: 100%;">Login</button>
         </form>
-        <a th:href="@{/register}">Register</a>
-        <div th:if="${param.error}" style="color: red;">
+        <p style="text-align: center; margin-top: 1rem;">
+            Don't have an account? <a th:href="@{/register}">Register here</a>
+        </p>
+        <div th:if="${param.error}" class="error">
             Invalid username or password.
         </div>
-        <div th:if="${param.success}" style="color: green;">
+        <div th:if="${param.success}" class="success">
             Registration successful. Please login.
         </div>
     </div>
